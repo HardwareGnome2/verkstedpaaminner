@@ -1,0 +1,2669 @@
+<!doctype html>
+<html lang="nb">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Verkstedpåminner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link id="favicon" rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='15' fill='%230f1519'/><circle cx='16' cy='16' r='12' fill='none' stroke='%23ffc21a' stroke-width='3'/><path d='M16 16 L23 9' stroke='%23ffc21a' stroke-width='3' stroke-linecap='round'/></svg>">
+<style>
+:root {
+  color-scheme: light;
+  --bg: #e7ebee; --panel: #ffffff; --panel2: #f1f4f6; --kant: #d2dae0;
+  --tekst: #17222a; --dempet: #5b6b76; --gul: #ffc21a; --gul2: #ffd459; --gul-tekst: #8a6400;
+  --rod: #d93a40; --rod-svak: #f7d6d8; --rod-svak-tekst: #6d1418; --oransje: #b8600c; --bla: #2a78a8;
+  --gronn: #23865a; --graa: #8c9ba5; --svart: #0f1519; --valgt: #fff3cc;
+  --disp: "Bahnschrift", "Barlow Semi Condensed", "Segoe UI", system-ui, sans-serif;
+  --brod: "Barlow", "Segoe UI", system-ui, sans-serif;
+  --ticker: 42px;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #18222a; --panel: #1f2c35; --panel2: #283844; --kant: #364956;
+    --tekst: #eef2f4; --dempet: #93a4ae; --gul-tekst: #ffc21a;
+    --rod: #e5484d; --rod-svak: #5c2226; --rod-svak-tekst: #ffffff; --oransje: #ff9f43; --bla: #6fb3d9;
+    --gronn: #3fb27f; --graa: #5f7280; --valgt: #364956;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #18222a; --panel: #1f2c35; --panel2: #283844; --kant: #364956;
+  --tekst: #eef2f4; --dempet: #93a4ae; --gul-tekst: #ffc21a;
+  --rod: #e5484d; --rod-svak: #5c2226; --rod-svak-tekst: #ffffff; --oransje: #ff9f43; --bla: #6fb3d9;
+  --gronn: #3fb27f; --graa: #5f7280; --valgt: #364956;
+}
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+*, *::before, *::after { box-sizing: inherit; }
+body { margin: 0; background: var(--bg); color: var(--tekst); font-family: var(--brod); font-size: 15px; line-height: 1.45;
+  padding-bottom: calc(var(--ticker) + env(safe-area-inset-bottom, 0px)); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--gul); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+/* topp */
+.topp { background: var(--panel); display: flex; align-items: center; gap: 16px; padding: 14px 22px; flex-wrap: wrap; }
+.topp svg { flex: none; }
+#maaler.hot { animation: varm 1.6s ease-in-out infinite; }
+@keyframes varm { 50% { filter: drop-shadow(0 0 6px rgb(229 72 77 / .8)); } }
+@media (prefers-reduced-motion: reduce) { #maaler.hot { animation: none; } }
+.merke h1 { font-family: var(--disp); font-weight: 700; font-size: 28px; line-height: 1.1; margin: 0; }
+.merke p { margin: 2px 0 0; color: var(--dempet); font-size: 14px; }
+.hoyre-topp { margin-left: auto; display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.alarm { font-family: var(--disp); font-weight: 700; font-size: 18px; color: var(--rod); }
+.alarm:empty { display: none; }
+.bruker { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--dempet); }
+.bruker img { width: 28px; height: 28px; border-radius: 50%; }
+.bruker b { color: var(--tekst); font-weight: 600; }
+.klokke { text-align: right; }
+.klokke .tid { font-family: var(--disp); font-size: 32px; font-weight: 700; color: var(--gul-tekst); font-variant-numeric: tabular-nums; line-height: 1.1; }
+.klokke .dato { color: var(--dempet); font-size: 14px; }
+.fare { height: 10px; background: repeating-linear-gradient(-45deg, var(--gul) 0 10px, var(--svart) 10px 20px); }
+
+/* instrumentpanel */
+.panel-rad { display: flex; flex-wrap: wrap; gap: 10px; padding: 14px 22px 0; }
+.maal { background: var(--panel); border: none; border-left: 4px solid var(--c); padding: 8px 18px 8px 14px; display: flex; align-items: baseline; gap: 10px; font: inherit; color: inherit; cursor: pointer; text-align: left; }
+.maal:hover { background: var(--panel2); }
+.maal:hover span::after { content: " ›"; }
+.maal b { font-family: var(--disp); font-size: 26px; color: var(--c); font-variant-numeric: tabular-nums; }
+.maal span { color: var(--dempet); font-size: 14px; }
+
+/* verktøylinje */
+.verktoy { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 14px 22px; }
+.verktoy .fyll { flex: 1; }
+.knapp { background: var(--panel2); border: 1px solid var(--kant); padding: 6px 13px; cursor: pointer; border-radius: 3px; white-space: nowrap; }
+.knapp:hover { border-color: var(--dempet); }
+.knapp.gul { background: var(--gul); border-color: var(--gul); color: #0f1519; font-weight: 600; }
+.knapp.gul:hover { background: var(--gul2); }
+.knapp.liten { padding: 3px 9px; font-size: 13px; }
+.knapp.fare-knapp { color: var(--rod); }
+.knapp.rod { background: var(--rod); border-color: var(--rod); color: #fff; font-weight: 600; }
+.knapp:disabled { opacity: .5; cursor: not-allowed; }
+.felt, select.felt { background: var(--panel); border: 1px solid var(--kant); padding: 6px 9px; border-radius: 3px; }
+.felt:focus { border-color: var(--gul); outline: none; }
+#sok { width: 220px; max-width: 100%; }
+.brikke { font-size: 13px; color: var(--dempet); padding: 3px 9px; border: 1px solid var(--kant); border-radius: 20px; white-space: nowrap; }
+.brikke::before { content: "●"; margin-right: 5px; color: var(--graa); }
+.brikke.delt::before { color: var(--gronn); }
+.brikke.feil::before { color: var(--rod); }
+
+/* hovedområde */
+.hoved { display: grid; grid-template-columns: 210px minmax(0, 1fr) 370px; gap: 14px; padding: 0 22px 22px; align-items: start; }
+@media (max-width: 1240px) { .hoved { grid-template-columns: 200px minmax(0, 1fr); } .detalj { grid-column: 2; } }
+@media (max-width: 760px) { .hoved { grid-template-columns: 1fr; } .detalj { grid-column: 1; } }
+
+/* mapper */
+.mapper { background: var(--panel); padding: 12px 0; position: sticky; top: 10px; }
+.mapper h2 { font-family: var(--disp); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--dempet); margin: 0 14px 6px; font-weight: 600; }
+.mapper ul { list-style: none; margin: 0; padding: 0; }
+.mappe { display: flex; align-items: center; gap: 8px; width: 100%; text-align: left; background: none; border: none; border-left: 4px solid transparent; padding: 7px 14px 7px 10px; cursor: pointer; }
+.mappe:hover { background: var(--panel2); }
+.mappe.aktiv { background: var(--valgt); border-left-color: var(--gul); font-weight: 600; }
+.mappe .ik { width: 18px; text-align: center; color: var(--dempet); flex: none; }
+.mappe .navn { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mappe .ant { font-size: 12px; color: var(--dempet); font-variant-numeric: tabular-nums; }
+.mappe .prikk { width: 8px; height: 8px; border-radius: 50%; background: var(--rod); flex: none; }
+.mapper .skille { height: 1px; background: var(--kant); margin: 10px 14px; }
+.mapper .ny-mappe { margin: 8px 14px 0; width: calc(100% - 28px); }
+@media (max-width: 760px) {
+  .mapper { position: static; padding: 8px; }
+  .mapper h2, .mapper .skille { display: none; }
+  .mapper ul { display: flex; gap: 6px; overflow-x: auto; }
+  .mappe { border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; width: auto; }
+  .mappe.aktiv { border-bottom-color: var(--gul); }
+  .mapper .ny-mappe { width: auto; margin: 6px 0 0; }
+}
+
+.liste { background: var(--panel); overflow-x: auto; min-height: 300px; }
+.liste-hode { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--kant); flex-wrap: wrap; }
+.liste-hode h2 { font-family: var(--disp); font-size: 19px; margin: 0; }
+.liste-hode .info { color: var(--dempet); font-size: 13px; }
+.liste-hode .fyll { flex: 1; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-family: var(--disp); font-weight: 500; color: var(--dempet); background: var(--panel2); padding: 9px 10px; white-space: nowrap; font-size: 14px; }
+td { padding: 8px 10px; border-top: 1px solid var(--kant); vertical-align: middle; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--panel2); }
+tbody tr.valgt { background: var(--valgt); }
+tr.st-Lest td { color: var(--bla); }
+tr.st-Under td { color: var(--oransje); }
+tr.st-Behandlet td { color: var(--graa); }
+tr.st-Planlagt td { color: var(--dempet); }
+tr.gruppe td { background: var(--panel2); font-family: var(--disp); color: var(--dempet); cursor: pointer; font-size: 14px; padding: 7px 10px; }
+tr.gruppe:hover td { color: var(--tekst); }
+tr.snart td:first-child { box-shadow: inset 4px 0 var(--oransje); }
+tr.snart td { animation: sakte 3.4s ease-in-out infinite; }
+@keyframes sakte { 50% { background: rgb(255 159 67 / .2); } }
+.kal-ik { display: inline-block; vertical-align: -2px; margin-left: 6px; color: var(--oransje); }
+.hendelse.snart { animation: sakte 3.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { tr.snart td, .hendelse.snart { animation: none; } }
+tr.blink td { animation: blink 1.2s steps(1) infinite; }
+@keyframes blink { 0% { background: var(--rod); color: #fff; } 50% { background: var(--rod-svak); color: var(--rod-svak-tekst); } }
+td.tittel { font-weight: 500; }
+td.tittel small { display: block; font-weight: 400; color: var(--dempet); font-size: 12px; }
+td.pri { color: var(--rod) !important; font-size: 12px; }
+.tag { color: var(--dempet); font-size: 13px; white-space: nowrap; }
+.ingen { padding: 50px 20px; text-align: center; color: var(--dempet); }
+@media (max-width: 1500px) { .k-kat { display: none; } }
+@media (max-width: 1360px) { .k-gj { display: none; } }
+@media (max-width: 1000px) { .k-endret { display: none; } }
+@media (max-width: 640px) { .k-kunde { display: none; } #sok { width: 100%; } }
+
+/* visningsvelger og kalender */
+.visning { display: inline-flex; border: 1px solid var(--kant); border-radius: 3px; overflow: hidden; }
+.visning button { background: var(--panel2); border: none; padding: 4px 12px; cursor: pointer; font-size: 14px; }
+.visning button + button { border-left: 1px solid var(--kant); }
+.visning button.aktiv { background: var(--gul); color: #0f1519; font-weight: 600; }
+.kal-nav { display: flex; align-items: center; gap: 8px; padding: 10px 12px; flex-wrap: wrap; }
+.kal-nav h3 { font-family: var(--disp); font-size: 18px; margin: 0 6px; min-width: 210px; }
+.uke { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--kant); }
+.dag { border-right: 1px solid var(--kant); min-height: 340px; padding: 0 6px 10px; cursor: copy; }
+.dag:last-child { border-right: none; }
+.dag-hode { position: sticky; top: 0; background: var(--panel); padding: 8px 2px 6px; font-family: var(--disp); color: var(--dempet); font-size: 14px; display: flex; gap: 6px; align-items: baseline; border-bottom: 2px solid transparent; margin-bottom: 6px; }
+.dag-hode b { font-size: 20px; color: var(--tekst); }
+.dag.idag .dag-hode { border-bottom-color: var(--gul); }
+.dag.idag .dag-hode b { color: var(--gul-tekst); }
+.dag.helg { background: var(--panel2); }
+.hendelse { display: block; width: 100%; text-align: left; background: var(--panel2); border: none; border-left: 4px solid var(--c, var(--gul)); padding: 4px 6px; margin-bottom: 5px; cursor: pointer; font-size: 13px; line-height: 1.3; border-radius: 2px; }
+.dag.helg .hendelse { background: var(--panel); }
+.hendelse:hover { outline: 1px solid var(--dempet); }
+.hendelse.valgt { outline: 2px solid var(--gul); }
+.hendelse time { font-family: var(--disp); font-weight: 600; font-variant-numeric: tabular-nums; }
+.hendelse .t { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hendelse .l { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hendelse .r { color: var(--dempet); font-family: var(--disp); font-size: 12px; margin-left: 4px; }
+.dag-hode .ant { margin-left: auto; font-size: 12px; background: var(--panel2); color: var(--dempet); border-radius: 10px; padding: 0 7px; }
+.dag.helg .dag-hode .ant { background: var(--panel); }
+.dag.helg .dag-hode { background: var(--panel2); }
+.hendelse.ferdig { opacity: .55; }
+.hendelse.ferdig .t { text-decoration: line-through; }
+.hendelse.alarm { animation: blink 1.2s steps(1) infinite; color: #fff; }
+.maned { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-top: 1px solid var(--kant); }
+.maned .ukedag { font-family: var(--disp); color: var(--dempet); font-size: 13px; padding: 6px 8px; background: var(--panel2); }
+.celle { border-top: 1px solid var(--kant); border-right: 1px solid var(--kant); min-height: 104px; padding: 4px 5px 6px; cursor: copy; }
+.celle:nth-child(7n) { border-right: none; }
+.celle .nr { font-family: var(--disp); font-size: 15px; color: var(--dempet); background: none; border: none; padding: 1px 4px; cursor: pointer; border-radius: 2px; }
+.celle .nr:hover { background: var(--panel2); color: var(--tekst); }
+.celle.utenfor { background: var(--panel2); }
+.celle.utenfor .nr { opacity: .5; }
+.celle.idag .nr { background: var(--gul); color: #0f1519; font-weight: 700; }
+.celle .hendelse { font-size: 12px; padding: 2px 5px; margin: 3px 0 0; }
+.celle .flere { font-size: 12px; color: var(--dempet); background: none; border: none; padding: 2px 4px; cursor: pointer; }
+.kal-tips { color: var(--dempet); font-size: 13px; padding: 8px 12px; border-top: 1px solid var(--kant); }
+@media (max-width: 900px) {
+  .uke { grid-template-columns: 1fr; }
+  .dag { border-right: none; border-bottom: 1px solid var(--kant); min-height: 0; }
+  .celle { min-height: 70px; }
+  .celle .hendelse .t { display: none; }
+}
+
+/* hurtignotat */
+.hurtig-rad { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--kant); background: var(--panel); flex-wrap: wrap; }
+.hurtig-rad .lyn { font-family: var(--disp); color: var(--gul-tekst); font-weight: 700; white-space: nowrap; }
+#hurtig { flex: 1; min-width: 220px; }
+.hurtig-forslag { flex-basis: 100%; font-size: 13px; color: var(--dempet); min-height: 1.2em; }
+.hurtig-forslag b { color: var(--tekst); font-weight: 600; }
+
+/* popup-lister */
+dialog.lett { width: min(560px, 94vw); }
+.pop-liste { display: flex; flex-direction: column; gap: 6px; margin: 10px 0 4px; }
+.kort-rad { display: grid; grid-template-columns: 112px auto 1fr; grid-template-rows: auto auto; column-gap: 10px; align-items: center; text-align: left;
+  background: var(--panel2); border: none; border-left: 4px solid var(--c, var(--gul)); padding: 7px 10px; cursor: pointer; border-radius: 2px; width: 100%; }
+.kort-rad:hover { outline: 1px solid var(--dempet); }
+.kort-rad .kr-tid { font-family: var(--disp); font-variant-numeric: tabular-nums; font-size: 14px; grid-row: span 2; }
+.kort-rad .kr-skilt { grid-row: span 2; }
+.kort-rad .kr-t { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kort-rad .kr-m { font-size: 13px; color: var(--dempet); grid-column: 3; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pop-seksjon { font-family: var(--disp); font-size: 15px; color: var(--dempet); margin: 14px 0 0; letter-spacing: .02em; }
+.pop-tom { color: var(--dempet); padding: 14px 0; }
+@media (max-width: 520px) { .kort-rad { grid-template-columns: 1fr auto; } .kort-rad .kr-tid, .kort-rad .kr-skilt { grid-row: auto; } .kort-rad .kr-m { grid-column: 1 / -1; } }
+
+/* hover-boble */
+.boble { position: fixed; z-index: 60; max-width: 340px; background: var(--svart); color: #eef2f4; padding: 10px 12px; border-radius: 4px; font-size: 13px; line-height: 1.4;
+  box-shadow: 0 6px 24px rgb(0 0 0 / .35); pointer-events: none; border-top: 3px solid var(--gul); }
+.boble b { font-family: var(--disp); font-size: 15px; display: block; margin-bottom: 2px; }
+.boble .bm { color: #9fb0ba; }
+.boble .bt { margin-top: 6px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.boble .bk { margin-top: 6px; color: #ffcf9e; }
+
+/* kommentarer og detaljer */
+.kommentar { background: var(--panel2); padding: 7px 10px; margin-bottom: 5px; border-left: 3px solid var(--bla); }
+.kommentar .k-hode { font-size: 12px; color: var(--dempet); margin-bottom: 2px; }
+.kommentar .k-hode b { color: var(--gul-tekst); font-weight: 600; }
+.kommentar div:last-child { white-space: pre-wrap; overflow-wrap: anywhere; }
+.kommentar-ny { display: flex; gap: 6px; margin-top: 4px; }
+.kommentar-ny input { flex: 1; min-width: 0; }
+.lenke { background: none; border: none; color: var(--bla); padding: 0; cursor: pointer; font-size: 13px; text-decoration: underline; }
+.hint { font-size: 13px; color: var(--gronn); margin-top: 4px; }
+.ansvar-felt { display: flex; gap: 6px; }
+.ansvar-felt select, .ansvar-felt input { flex: 1; min-width: 0; }
+.ikon-knapp { padding: 6px 10px; }
+#toast .angre { margin-left: 14px; background: var(--gul); color: #0f1519; border: none; padding: 3px 12px; border-radius: 3px; font-weight: 700; cursor: pointer; }
+.anonym { font-size: 13px; color: var(--dempet); font-style: italic; }
+
+/* søppelbøtte, høyreklikkmeny og slettebekreftelse */
+th.k-slett, td.k-slett { width: 38px; padding: 0 6px; text-align: center; }
+.soppel { background: none; border: none; color: var(--rod); opacity: .3; cursor: pointer; padding: 5px; border-radius: 3px; line-height: 0; }
+tr:hover .soppel, tr.valgt .soppel, .soppel:focus-visible { opacity: 1; }
+.soppel:hover { background: var(--rod-svak); }
+.meny { position: fixed; z-index: 70; min-width: 210px; background: var(--panel); border: 1px solid var(--kant); border-radius: 4px; padding: 5px 0;
+  box-shadow: 0 8px 28px rgb(0 0 0 / .28); }
+.meny button { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; background: none; border: none; padding: 7px 14px; cursor: pointer; font-size: 14px; }
+.meny button:hover, .meny button:focus-visible { background: var(--panel2); outline: none; }
+.meny button .mi { width: 16px; text-align: center; color: var(--dempet); }
+.meny .farlig { color: var(--rod); }
+.meny .farlig .mi { color: var(--rod); }
+.meny hr { border: none; border-top: 1px solid var(--kant); margin: 4px 0; }
+.meny .mtittel { padding: 4px 14px 6px; font-family: var(--disp); color: var(--dempet); font-size: 13px; max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bekreft { position: fixed; z-index: 75; background: var(--panel); border: 1px solid var(--kant); border-top: 3px solid var(--rod); border-radius: 4px;
+  padding: 10px 12px; box-shadow: 0 8px 28px rgb(0 0 0 / .3); width: 260px; }
+.bekreft p { margin: 0 0 8px; font-size: 14px; }
+.bekreft p b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bekreft .rad { justify-content: flex-end; margin: 0; }
+
+/* kompakt modus */
+body.kompakt .panel-rad, body.kompakt .merke p, body.kompakt .hurtig-forslag:empty { display: none; }
+body.kompakt .topp { padding: 6px 22px; }
+body.kompakt .merke h1 { font-size: 21px; }
+body.kompakt .klokke .tid { font-size: 22px; }
+body.kompakt .verktoy { padding: 8px 22px; }
+body.kompakt td { padding: 4px 8px; font-size: 14px; }
+body.kompakt td.tittel small { display: none; }
+body.kompakt .skilt.liten { font-size: 12px; }
+body.kompakt .detalj { padding: 12px; }
+
+/* bilskilt */
+.skilt { display: inline-flex; align-items: stretch; border: 2px solid #0f1519; border-radius: 4px; background: #fff; color: #000; font-family: var(--disp); font-weight: 700; line-height: 1; white-space: nowrap; }
+.skilt::before { content: "N"; background: #003399; color: #fff; font-size: .5em; padding: 0 .4em .25em; display: flex; align-items: flex-end; }
+.skilt span { padding: .22em .45em; letter-spacing: .04em; }
+.skilt.liten { font-size: 13px; border-width: 1px; }
+.skilt.stor { font-size: 26px; }
+
+/* detaljer */
+.detalj { background: var(--panel); padding: 18px; position: sticky; top: 10px; }
+@media (max-width: 1240px) { .detalj { position: static; } }
+.detalj .tom { color: var(--dempet); text-align: center; padding: 60px 10px; }
+.detalj h2 { font-family: var(--disp); font-size: 22px; margin: 12px 0 10px; line-height: 1.2; overflow-wrap: anywhere; }
+.info-liste { display: grid; grid-template-columns: auto 1fr; gap: 3px 16px; margin: 0 0 12px; }
+.info-liste dt { color: var(--dempet); font-size: 13px; padding-top: 2px; }
+.info-liste dd { margin: 0; overflow-wrap: anywhere; }
+.rad { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; align-items: center; }
+.rad .etikett { color: var(--dempet); font-size: 13px; margin-right: 2px; }
+.etikett-blokk { color: var(--dempet); font-size: 13px; margin: 14px 0 3px; }
+.notat-tekst { background: var(--panel2); padding: 9px 11px; white-space: pre-wrap; overflow-wrap: anywhere; min-height: 2.5em; }
+.logg { font-size: 13px; color: var(--dempet); max-height: 200px; overflow-y: auto; }
+.logg div { padding: 2px 0; }
+.logg time { font-variant-numeric: tabular-nums; margin-right: 10px; }
+.logg .av { color: var(--gul-tekst); margin-left: 6px; }
+
+/* dialoger */
+dialog { background: var(--panel); color: var(--tekst); border: none; padding: 0; border-radius: 4px; width: min(600px, 94vw); max-height: 92vh; overflow: auto; }
+dialog::backdrop { background: rgb(0 0 0 / .55); }
+dialog .fare { height: 9px; }
+.dialog-innhold { padding: 16px 22px 20px; }
+.dialog-innhold h3 { font-family: var(--disp); font-size: 22px; margin: 0 0 6px; }
+.dialog-innhold p { margin: 6px 0; }
+.skjema { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+.skjema label { display: flex; flex-direction: column; gap: 3px; color: var(--dempet); font-size: 13px; margin-top: 8px; }
+.skjema label > * { color: var(--tekst); font-size: 15px; }
+.skjema .hel { grid-column: 1 / -1; }
+.skjema textarea { min-height: 90px; resize: vertical; }
+#f-regnr { font-family: var(--disp); text-transform: uppercase; letter-spacing: .04em; }
+.paaminn { grid-column: 1 / -1; background: var(--panel2); padding: 12px 14px; margin-top: 14px; }
+.paaminn h4 { font-family: var(--disp); color: var(--gul-tekst); margin: 0; font-size: 17px; }
+.paaminn .tre { display: grid; grid-template-columns: 1.4fr 1fr .8fr; gap: 10px; }
+.radio { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 6px; }
+.radio label { display: flex; flex-direction: row; align-items: center; gap: 6px; margin: 0; color: var(--tekst); font-size: 15px; }
+.knapperad { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; flex-wrap: wrap; }
+@media (max-width: 520px) { .skjema, .paaminn .tre { grid-template-columns: 1fr; } }
+.faresone { border: 2px solid var(--rod); padding: 12px 14px; margin-top: 16px; }
+.faresone h4 { color: var(--rod); font-family: var(--disp); margin: 0 0 4px; font-size: 17px; }
+.oppslag-liste { list-style: none; padding: 0; margin: 10px 0; max-height: 260px; overflow-y: auto; }
+.oppslag-liste li { display: flex; gap: 10px; align-items: center; padding: 7px 0; border-top: 1px solid var(--kant); }
+.oppslag-liste li span { flex: 1; overflow-wrap: anywhere; }
+.oppslag-liste small { color: var(--dempet); }
+
+/* varsel */
+#varsler { width: min(520px, 94vw); }
+.varsel-kort { padding: 16px 22px 18px; }
+.varsel-kort + .varsel-kort { border-top: 1px solid var(--kant); }
+.varsel-topp { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.varsel-topp strong { font-family: var(--disp); color: var(--gul-tekst); font-size: 18px; }
+.varsel-topp .merke-pri { background: var(--rod); color: #fff; font-family: var(--disp); font-size: 13px; padding: 1px 8px; }
+.varsel-topp .mappe-merke { color: var(--dempet); font-size: 13px; }
+.varsel-topp time { margin-left: auto; color: var(--dempet); font-family: var(--disp); font-size: 17px; }
+.varsel-kort h3 { font-family: var(--disp); font-size: 24px; margin: 8px 0; line-height: 1.2; overflow-wrap: anywhere; }
+.varsel-kort .meta { color: var(--dempet); margin: 6px 0; }
+
+/* nyhetsbånd */
+.ticker { position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; height: calc(var(--ticker) + env(safe-area-inset-bottom, 0px));
+  padding-bottom: env(safe-area-inset-bottom, 0px); background: #0f1519; color: #e9edf0; display: flex; align-items: stretch;
+  border-top: 3px solid var(--gul); font-family: var(--disp); font-size: 16px; }
+.ticker .stempel { background: var(--gul); color: #0f1519; font-weight: 700; letter-spacing: .08em; padding: 0 14px; display: flex; align-items: center; gap: 8px; flex: none; }
+.ticker .stempel button { background: #0f1519; color: var(--gul); border: none; height: 24px; border-radius: 12px; padding: 0 9px; cursor: pointer; font-weight: 700; line-height: 1; font-family: var(--disp); letter-spacing: 0; font-size: 13px; }
+.spor { flex: 1; overflow: hidden; display: flex; align-items: center; position: relative;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 40px, #000 calc(100% - 40px), transparent); }
+.bane { display: inline-flex; align-items: center; white-space: nowrap; will-change: transform; animation: rull var(--varighet, 120s) linear infinite; }
+.ticker:hover .bane, .ticker:focus-within .bane { animation-play-state: paused; }
+@keyframes rull { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.nyhet { padding: 0 26px; display: inline-flex; align-items: center; gap: 10px; }
+.nyhet::after { content: "◆"; color: #3a4b57; margin-left: 26px; font-size: 11px; }
+.nyhet b { font-size: 12px; letter-spacing: .1em; padding: 1px 7px; border: 1px solid currentColor; font-weight: 600; }
+.nyhet .k-fakta { color: #ffc21a; } .nyhet .k-tips { color: #6fb3d9; } .nyhet .k-status { color: #3fb27f; }
+.nyhet .k-regel { color: #ff8a8f; } .nyhet .k-elbil { color: #4fd18b; } .nyhet .k-service { color: #b9c9d4; } .nyhet .k-sesong { color: #7fd8cf; }
+/* brukerens egne oppslag: større, fetere, varm farge og en rolig lysglans */
+.nyhet.oppslag b { background: #ff9f43; color: #0f1519; border-color: #ff9f43; }
+.nyhet.oppslag .lapp { position: relative; overflow: hidden; display: inline-flex; align-items: baseline; gap: 8px;
+  font-size: 19px; font-weight: 700; color: #fff; padding: 3px 12px; border-radius: 3px;
+  background: linear-gradient(90deg, rgb(255 159 67 / .26), rgb(255 159 67 / .10)); box-shadow: inset 0 0 0 1px rgb(255 159 67 / .55); }
+.nyhet.oppslag .lapp::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / .28) 50%, transparent 65%);
+  transform: translateX(-130%); animation: glans 8s ease-in-out infinite; }
+.nyhet.oppslag .av { font-size: 13px; font-weight: 500; color: #ffcf9e; }
+@keyframes glans { 0%, 72% { transform: translateX(-130%); } 88%, 100% { transform: translateX(130%); } }
+.rolig .bane { animation: none; }
+.rolig .nyhet::after { display: none; }
+@media (prefers-reduced-motion: reduce) { .nyhet.oppslag .lapp::after { animation: none; display: none; } }
+
+.toast { position: fixed; left: 50%; bottom: calc(var(--ticker) + 18px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--svart); color: #fff; padding: 9px 16px; border-left: 4px solid var(--gul); max-width: 90vw; z-index: 50; }
+@media (prefers-reduced-motion: reduce) { tr.blink td { animation-duration: 2.4s; } }
+</style>
+</head>
+<body>
+
+<header class="topp">
+  <svg id="maaler" width="78" height="58" viewBox="0 0 78 58" role="img" aria-label="Temperaturmåler"></svg>
+  <div class="merke">
+    <h1>Verkstedpåminner</h1>
+    <p>Notater og påminnelser for kundemottaket</p>
+  </div>
+  <div class="hoyre-topp">
+    <div class="alarm" id="alarm" role="status" aria-live="polite"></div>
+    <div class="bruker" id="bruker"></div>
+    <div class="klokke"><div class="tid" id="tid">--:--:--</div><div class="dato" id="dato"></div></div>
+  </div>
+</header>
+<div class="fare"></div>
+
+<section class="panel-rad" aria-label="Oversikt">
+  <button type="button" class="maal" data-kort="ny" style="--c: var(--gul-tekst)"><b id="t-ny">0</b><span>Nye</span></button>
+  <button type="button" class="maal" data-kort="under" style="--c: var(--oransje)"><b id="t-under">0</b><span>Under behandling</span></button>
+  <button type="button" class="maal" data-kort="idag" style="--c: var(--bla)"><b id="t-idag">0</b><span>Varsler i dag</span></button>
+  <button type="button" class="maal" data-kort="haster" style="--c: var(--rod)"><b id="t-haster">0</b><span>Haster</span></button>
+  <button type="button" class="maal" data-kort="senere" style="--c: var(--graa)" title="Påminnelser mer enn 5 virkedager frem i tid"><b id="t-senere">0</b><span>Lengre frem i tid</span></button>
+</section>
+
+<div class="verktoy">
+  <button class="knapp gul" id="ny-knapp">+ Nytt notat</button>
+  <input class="felt" id="sok" type="search" placeholder="Søk på regnr, kunde, telefon …" aria-label="Søk">
+  <select class="felt" id="filter" aria-label="Filter">
+    <option>Aktive</option><option>Mine saker</option><option>Alle</option><option>Forfaller i dag</option><option>Haster</option><option>Lengre frem i tid</option>
+    <option>Ny</option><option>Lest</option><option>Under behandling</option><option>Behandlet</option><option>Arkiv</option>
+  </select>
+  <span class="fyll"></span>
+  <button class="knapp" id="varsel-knapp" hidden>Slå på Windows-varsler</button>
+  <button class="knapp ikon-knapp" id="tema-knapp" title="Bytt mellom automatisk, lyst og mørkt tema">Tema: Auto</button>
+  <button class="knapp ikon-knapp" id="kompakt-knapp" title="Kompakt visning: lavere rader, skjuler oversiktskortene" aria-pressed="false">▤ Kompakt</button>
+  <button class="knapp" id="innst-knapp">⚙ Innstillinger</button>
+  <span class="brikke" id="lagring">Lagret i denne nettleseren</span>
+</div>
+
+<main class="hoved">
+  <nav class="mapper" aria-label="Mapper">
+    <h2>Mapper</h2>
+    <ul id="mappeliste"></ul>
+    <button class="knapp liten ny-mappe" id="ny-mappe">+ Ny mappe</button>
+  </nav>
+  <div class="liste">
+    <div class="liste-hode">
+      <h2 id="mappe-tittel">Alle mapper</h2>
+      <span class="info" id="mappe-info"></span>
+      <span class="fyll"></span>
+      <div class="visning" role="group" aria-label="Visning">
+        <button type="button" data-vis="liste">Liste</button><button type="button" data-vis="uke">Uke</button><button type="button" data-vis="maned">Måned</button>
+      </div>
+      <button class="knapp liten" id="mappe-rediger" hidden>Endre navn</button>
+      <button class="knapp liten fare-knapp" id="mappe-slett" hidden>Slett mappe</button>
+    </div>
+    <div class="hurtig-rad">
+      <label class="lyn" for="hurtig">⚡ Hurtignotat</label>
+      <input class="felt" id="hurtig" autocomplete="off" placeholder="F.eks. «EL12345 ring kunde i morgen 10» – Enter lagrer, Shift+Enter åpner skjema">
+      <div class="hurtig-forslag" id="hurtig-forslag" aria-live="polite"></div>
+    </div>
+    <div id="kalender" hidden></div>
+    <table id="tabell">
+      <thead><tr>
+        <th>Status</th><th aria-label="Prioritet"></th><th>Regnr</th><th class="k-kunde">Kunde</th>
+        <th>Tittel</th><th class="k-kat">Kategori</th><th>Neste varsel</th><th class="k-gj">Gjentakelse</th><th class="k-endret">Sist endret</th><th class="k-slett" aria-label="Slett"></th>
+      </tr></thead>
+      <tbody id="rader"></tbody>
+    </table>
+    <div class="ingen" id="ingen" hidden></div>
+  </div>
+  <aside class="detalj" id="detalj" aria-live="polite"></aside>
+</main>
+
+<!-- redigering -->
+<dialog id="rediger">
+  <div class="fare"></div>
+  <form class="dialog-innhold" id="skjema" method="dialog">
+    <h3 id="r-tittel">Nytt notat</h3>
+    <div class="skjema">
+      <label id="mal-felt">Start fra mal
+        <select class="felt" id="f-mal"></select>
+      </label>
+      <label>Mappe<select class="felt" id="f-mappe"></select></label>
+      <label class="hel">Tittel *<input class="felt" id="f-tittel" required autocomplete="off"></label>
+      <label>Regnr<input class="felt" id="f-regnr" autocomplete="off" maxlength="10" list="dl-regnr"></label>
+      <label>Telefon<input class="felt" id="f-tlf" type="tel" autocomplete="off"></label>
+      <label>Kunde<input class="felt" id="f-kunde" autocomplete="off" list="dl-kunde"></label>
+      <label>Kategori<select class="felt" id="f-kat"></select></label>
+      <div class="hel hint" id="f-hint" hidden></div>
+      <label>Prioritet<select class="felt" id="f-pri"></select></label>
+      <label>Status<select class="felt" id="f-status"></select></label>
+      <label class="hel">Ansvarlig
+        <span class="ansvar-felt">
+          <select class="felt" id="f-ansvar"></select>
+          <input class="felt" id="f-ansvar-navn" list="dl-navn" placeholder="Navn (valgfritt)" autocomplete="off">
+          <button type="button" class="knapp liten" id="f-ansvar-sok">Søk kollega …</button>
+        </span>
+      </label>
+      <label class="hel">Notat<textarea class="felt" id="f-notat"></textarea></label>
+      <div class="paaminn">
+        <h4>Påminnelse</h4>
+        <div class="tre skjema" style="display:grid">
+          <label>Gjentakelse<select class="felt" id="f-gj"></select></label>
+          <label>Dato<input class="felt" id="f-dato" type="date"></label>
+          <label>Klokkeslett<input class="felt" id="f-tid" type="time"></label>
+        </div>
+        <div class="rad">
+          <button type="button" class="knapp liten" data-hurtig="30">Om 30 min</button>
+          <button type="button" class="knapp liten" data-hurtig="60">Om 1 time</button>
+          <button type="button" class="knapp liten" data-hurtig="imorgen">I morgen 08:00</button>
+          <button type="button" class="knapp liten" data-hurtig="mandag">Mandag 08:00</button>
+        </div>
+        <div class="radio">
+          <label><input type="radio" name="f-modus" value="popup" checked> Popup-varsel</label>
+          <label><input type="radio" name="f-modus" value="blink"> Bare blinking i listen</label>
+        </div>
+        <div class="radio" id="hvem-rad">
+          <label><input type="radio" name="f-hvem" value="alle" checked> Varsle alle</label>
+          <label><input type="radio" name="f-hvem" value="meg"> Bare meg</label>
+          <label><input type="radio" name="f-hvem" value="ansvarlig"> Bare ansvarlig</label>
+        </div>
+      </div>
+    </div>
+    <div class="knapperad">
+      <button type="button" class="knapp liten" id="som-mal" style="margin-right:auto">Lagre som mal</button>
+      <button type="button" class="knapp" id="avbryt">Avbryt</button>
+      <button type="submit" class="knapp gul">Lagre notat</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- mappe -->
+<dialog id="mappe-dlg" style="width:min(420px,94vw)">
+  <div class="fare"></div>
+  <form class="dialog-innhold" id="mappe-skjema" method="dialog">
+    <h3 id="mappe-dlg-tittel">Ny mappe</h3>
+    <p style="color:var(--dempet);font-size:14px">Mappen deles med alle som bruker verktøyet.</p>
+    <div class="skjema"><label class="hel">Navn<input class="felt" id="m-navn" required maxlength="40" autocomplete="off" placeholder="F.eks. Dekkhotell"></label></div>
+    <div class="knapperad">
+      <button type="button" class="knapp" data-lukk>Avbryt</button>
+      <button type="submit" class="knapp gul">Lagre</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- innstillinger -->
+<dialog id="innst-dlg">
+  <div class="fare"></div>
+  <div class="dialog-innhold">
+    <h3>Innstillinger</h3>
+    <div id="sky-blokk" hidden>
+      <div class="etikett-blokk">Konto</div>
+      <div class="rad"><span id="sky-konto" style="flex:1"></span><button class="knapp liten" id="sky-loggut">Logg ut</button></div>
+      <div id="sky-brukere-blokk" hidden>
+        <div class="etikett-blokk">Brukere og tilgang</div>
+        <ul class="oppslag-liste" id="sky-brukere"></ul>
+      </div>
+    </div>
+    <div id="navn-blokk">
+      <div class="skjema"><label class="hel">Ditt navn (vises som /navn på endringer)<input class="felt" id="i-navn" maxlength="30" autocomplete="off"></label></div>
+      <div class="knapperad" style="margin-top:8px"><button class="knapp" id="i-navn-lagre">Lagre navn</button></div>
+    </div>
+    <div class="etikett-blokk">Visning</div>
+    <div class="radio"><label><input type="checkbox" id="i-dag"> Vis dagens oversikt første gang appen åpnes hver dag</label></div>
+    <div class="rad"><button class="knapp liten" id="i-vis-dag">Vis dagens oversikt nå</button></div>
+    <div class="etikett-blokk">Maler</div>
+    <ul class="oppslag-liste" id="mal-liste"></ul>
+    <div id="mal-skjema" class="skjema" hidden style="background:var(--panel2);padding:4px 12px 12px;margin-bottom:8px">
+      <label>Tittel<input class="felt" id="ml-tittel" maxlength="80" autocomplete="off"></label>
+      <label>Kategori<select class="felt" id="ml-kat"></select></label>
+      <label class="hel">Notattekst<textarea class="felt" id="ml-tekst" style="min-height:60px"></textarea></label>
+      <div class="hel knapperad" style="margin-top:8px"><button class="knapp liten" id="ml-avbryt">Avbryt</button><button class="knapp liten gul" id="ml-lagre">Lagre mal</button></div>
+    </div>
+    <div class="rad"><button class="knapp liten" id="ny-mal">+ Ny mal</button><button class="knapp liten" id="mal-standard">Tilbakestill til standardmalene</button></div>
+    <div class="etikett-blokk">Personvern</div>
+    <p style="font-size:14px;margin:0">Behandlede saker flyttes til <b>Arkiv</b> etter 14 dager. 2 måneder etter at en sak ble behandlet, fjernes kundenavn, telefon, regnr, notattekst og kommentarer automatisk. Tittel og historikk beholdes, så unngå kundenavn i tittelen.</p>
+    <div class="etikett-blokk">Vedlikehold</div>
+    <div class="rad"><button class="knapp" id="rydd-knapp">Slett behandlede notater eldre enn 30 dager</button></div>
+    <div class="faresone" id="wipe-blokk" hidden>
+      <h4>Slett alle kundedata</h4>
+      <p style="font-size:14px">Sletter alle notater og oppslag for alle brukere: delte mapper, alles private mapper og det som er lagret lokalt i nettleserne. Kundenavn, telefonnumre, regnumre og historikk forsvinner. Kan ikke angres.</p>
+      <div class="radio" style="margin:6px 0 2px"><label><input type="checkbox" id="wipe-mapper"> Slett også mappene</label></div>
+      <p style="font-size:14px" id="wipe-merknad"></p>
+      <div class="skjema"><label class="hel">Skriv SLETT for å bekrefte<input class="felt" id="wipe-bekreft" autocomplete="off"></label></div>
+      <div class="knapperad" style="justify-content:flex-start;margin-top:10px"><button class="knapp rod" id="wipe-knapp" disabled>Slett alle kundedata</button></div>
+    </div>
+    <div class="knapperad"><button class="knapp" data-lukk>Lukk</button></div>
+  </div>
+</dialog>
+
+<!-- oppslag -->
+<dialog id="oppslag-dlg">
+  <div class="fare"></div>
+  <form class="dialog-innhold" id="oppslag-skjema" method="dialog">
+    <h3>Oppslag i nyhetsbåndet</h3>
+    <p style="color:var(--dempet);font-size:14px">Korte beskjeder til alle, for eksempel «Leverandør stengt i morgen» eller «Lunsj 11:30». Oppslag vises fremhevet i båndet omtrent hvert minutt, og forsvinner av seg selv når de utløper.</p>
+    <div class="skjema">
+      <label class="hel">Ny beskjed<input class="felt" id="o-tekst" maxlength="140" autocomplete="off"></label>
+      <label>Vises til<select class="felt" id="o-utlop">
+        <option value="kveld">I kveld</option><option value="morgen">I morgen kveld</option>
+        <option value="uke" selected>Ut uka</option><option value="dato">Velg dato …</option><option value="aldri">Til den slettes</option>
+      </select></label>
+      <label id="o-dato-felt" hidden>Dato<input class="felt" id="o-dato" type="date"></label>
+    </div>
+    <div class="knapperad" style="margin-top:8px"><button type="submit" class="knapp gul">Legg til</button></div>
+    <ul class="oppslag-liste" id="oppslag-liste"></ul>
+    <div class="knapperad"><button type="button" class="knapp" data-lukk>Lukk</button></div>
+  </form>
+</dialog>
+
+<!-- påminnelser -->
+<dialog id="varsler" aria-label="Påminnelser">
+  <div class="fare" style="height:12px"></div>
+  <div id="varsel-liste"></div>
+</dialog>
+
+<footer class="ticker" id="ticker" aria-label="Nyhetsbånd">
+  <div class="stempel">INFO <button id="oppslag-knapp" title="Legg til eller fjern oppslag">+ Oppslag</button></div>
+  <div class="spor"><div class="bane" id="bane"></div></div>
+</footer>
+
+<!-- popup for oversiktskort og dagens oversikt -->
+<dialog id="pop" class="lett">
+  <div class="fare"></div>
+  <div class="dialog-innhold">
+    <h3 id="pop-tittel"></h3>
+    <div id="pop-innhold"></div>
+    <div class="knapperad" id="pop-fot"></div>
+  </div>
+</dialog>
+
+<datalist id="dl-regnr"></datalist><datalist id="dl-kunde"></datalist><datalist id="dl-navn"></datalist>
+<div class="boble" id="boble" hidden></div>
+<div class="meny" id="hoyremeny" role="menu" hidden></div>
+<div class="bekreft" id="bekreft" role="alertdialog" aria-labelledby="bekreft-tekst" hidden>
+  <p id="bekreft-tekst">Slette notatet?<b></b></p>
+  <div class="rad"><button type="button" class="knapp liten" id="bekreft-nei">Avbryt</button><button type="button" class="knapp liten rod" id="bekreft-ja">Slett</button></div>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+"use strict";
+// Sky-utgaven (Firebase) setter window.VERKSTED_SKY = true før dette skriptet. Da lagres aldri kundedata i nettleseren.
+const SKY = !!window.VERKSTED_SKY;
+const KATEGORIER = ["Ring kunde", "Delbestilling", "Henting / levering", "Lånebil", "EU-kontroll", "Dekkskift / dekkhotell", "Service", "Reklamasjon", "Internt", "Annet"];
+const PRIORITETER = ["Normal", "Høy", "Haster"];
+const STATUSER = ["Ny", "Lest", "Under behandling", "Behandlet"];
+const IKON = { "Ny": "●", "Lest": "○", "Under behandling": "◐", "Behandlet": "✔", "Planlagt": "◷" };
+const STATUS_VALG = [["Ny", "Ny"], ["Lest", "Lest"], ["Under behandling", "Under behandling"], ["Behandlet", "Behandlet"], ["Planlagt", "Lengre frem i tid"]];
+const SOPPEL = `<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M2.5 4h11M6 4V2.5h4V4M4 4l.7 9.5h6.6L12 4M6.6 6.5v5M9.4 6.5v5"/></svg>`;
+function visStatus(s) { return s === "Planlagt" ? "Lengre frem i tid" : s; }
+const KAL_IKON = `<svg class="kal-ik" width="14" height="14" viewBox="0 0 16 16" aria-label="Nærmer seg"><rect x="1.5" y="2.5" width="13" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M1.5 6.2h13M5 1v3M11 1v3" stroke="currentColor" stroke-width="1.5"/></svg>`;
+const GJ = [["none", "Ingen påminnelse"], ["once", "Én gang"], ["daily", "Daglig"], ["weekdays", "Hverdager (man–fre)"], ["weekly", "Ukentlig"], ["biweekly", "Annenhver uke"], ["monthly", "Månedlig"]];
+const MALER = [
+  ["Ring kunde – bilen er klar", "Ring kunde", "Bilen er ferdig og klar for henting."],
+  ["Del ankommet – avtal time", "Delbestilling", "Bestilt del er kommet. Ring kunden og avtal time."],
+  ["Følg opp delbestilling", "Delbestilling", "Sjekk status på bestillingen hos leverandør."],
+  ["Lånebil skal tilbake", "Lånebil", "Kontroller at lånebilen er levert. Sjekk drivstoff, km og skader."],
+  ["EU-kontroll forfaller", "EU-kontroll", "Kontakt kunden om EU-kontroll som snart forfaller."],
+  ["Dekkskift – kontakt kunde", "Dekkskift / dekkhotell", "Kunden har dekk på dekkhotellet. Tilby time for dekkskift."],
+  ["Oppfølging etter besøk", "Service", "Ring kunden og hør om alt er i orden etter verkstedbesøket."],
+  ["Reklamasjon – følg opp", "Reklamasjon", "Følg opp reklamasjonssak mot leverandør/kunde."]
+];
+const NYHETER = [
+  // bilhistorie og morsomme fakta
+  ["fakta", "Den første bilen med bensinmotor regnes som Benz Patent-Motorwagen fra 1886."],
+  ["fakta", "I 1888 kjørte Bertha Benz rundt 10 mil med ektemannens bil – verdens første langtur med bil."],
+  ["fakta", "Trepunkts sikkerhetsbelte ble utviklet av Volvo-ingeniøren Nils Bohlin i 1959. Volvo lot alle bruke patentet gratis."],
+  ["fakta", "Vindusviskeren ble patentert av Mary Anderson i 1903."],
+  ["fakta", "Toyota Corolla er tidenes mest solgte bilmodell, med over 50 millioner solgte eksemplarer."],
+  ["fakta", "En vanlig bil består av rundt 30 000 deler når man teller hver skrue."],
+  ["fakta", "Ford T-modellen ble i mange år bare levert i svart, fordi svart lakk tørket raskest på samlebåndet."],
+  ["fakta", "Verdens første fartsbot ble skrevet ut i England i 1896 – for drøye 13 km/t."],
+  ["fakta", "Det ble laget over 15 millioner Ford T-modeller mellom 1908 og 1927."],
+  ["fakta", "Da Ford innførte samlebåndet i 1913, gikk produksjonstiden for et chassis ned fra rundt 12 timer til halvannen."],
+  ["fakta", "Volkswagen Boble ble produsert i over 21 millioner eksemplarer."],
+  ["fakta", "Rundt år 1900 var omtrent en tredjedel av bilene i USA elektriske."],
+  ["fakta", "Ferdinand Porsche bygde en hybridbil, Lohner-Porsche, allerede rundt år 1900."],
+  ["fakta", "Toyota Prius fra 1997 var verdens første masseproduserte hybridbil."],
+  ["fakta", "Cruisekontrollen ble oppfunnet av Ralph Teetor – en blind ingeniør."],
+  ["fakta", "Den elektriske startmotoren kom på Cadillac i 1912. Før det måtte bilen sveives i gang."],
+  ["fakta", "Jaguar vant Le Mans i 1953 med skivebremser, og fikk resten av bilverdenen til å følge etter."],
+  ["fakta", "Det første elektroniske ABS-systemet i en vanlig bil kom i Mercedes S-klasse i 1978."],
+  ["fakta", "Den første Le Mans 24-timers ble kjørt i 1923."],
+  ["fakta", "Rudolf Diesel fikk patent på dieselmotoren i 1893."],
+  ["fakta", "ThrustSSC brøt lydmuren på land i 1997 med 1228 km/t."],
+  ["fakta", "Bugatti Veyron passerte 400 km/t i 2005 og ble en av verdens raskeste produksjonsbiler."],
+  ["fakta", "Lamborghini startet som traktorprodusent før de begynte å lage sportsbiler."],
+  ["fakta", "Den originale Mini fra 1959 ble tegnet av Alec Issigonis."],
+  ["fakta", "Porsche 911 ble presentert i 1963 og produseres fortsatt."],
+  ["fakta", "Volvo betyr «jeg ruller» på latin."],
+  ["fakta", "Audis fire ringer står for fire bilmerker som slo seg sammen i 1932: Audi, DKW, Horch og Wanderer."],
+  ["fakta", "Mercedes har navnet sitt etter Mercedes Jellinek, datteren til en av de tidlige forhandlerne."],
+  ["fakta", "Subaru er det japanske navnet på stjernehopen Pleiadene – den du ser i logoen."],
+  ["fakta", "BMW står for Bayerische Motoren Werke. Logoen viser de bayerske fargene blått og hvitt."],
+  ["fakta", "Toyota het opprinnelig Toyoda, etter grunnleggerfamilien."],
+  ["fakta", "Michelinguiden ble laget for å få folk til å kjøre mer – og dermed slite mer på dekkene."],
+  ["fakta", "Michelin-mannen heter egentlig Bibendum."],
+  ["fakta", "Bilradioprodusenten Motorola fikk navnet sitt fra «motor» og «Victrola»."],
+  ["fakta", "En privatbil står parkert omtrent 95 prosent av tiden."],
+  ["fakta", "Tesla Model Y var verdens mest solgte bilmodell i 2023."],
+  ["fakta", "I 2024 passerte antallet elbiler antallet bensinbiler i den norske bilparken."],
+  ["fakta", "Norge har verdens høyeste andel elbiler i nybilsalget – godt over ni av ti nye biler er elektriske."],
+  ["fakta", "Den første kollisjonsputen i serieproduksjon kom på amerikanske biler tidlig på 1970-tallet."],
+  // norske regler
+  ["regel", "Minstekrav til mønsterdybde: 1,6 mm på sommerdekk og 3 mm på vinterdekk."],
+  ["regel", "Piggdekk er tillatt fra 1. november i Sør-Norge, og fra 16. oktober i Nordland, Troms og Finnmark."],
+  ["regel", "EU-kontroll: nye personbiler kontrolleres første gang etter 4 år, deretter hvert andre år."],
+  ["regel", "Refleksvest og varseltrekant er påbudt i alle norske personbiler."],
+  ["regel", "Kjørelys er påbudt hele døgnet i Norge."],
+  ["regel", "Barn under 135 cm skal sikres med godkjent barnesete eller pute."],
+  ["regel", "Promillegrensen i Norge er 0,2."],
+  ["regel", "Uten skilting er fartsgrensen 50 km/t i tettbygd strøk og 80 km/t utenfor."],
+  ["regel", "Påbud om bilbelte i forsetet kom i Norge i 1975."],
+  ["regel", "Det er ikke generelt påbud om vinterdekk på personbil, men bilen skal ha dekk som er tilpasset føret."],
+  ["regel", "Fra 2023 betales moms på den delen av prisen på nye elbiler som overstiger 500 000 kroner."],
+  // vedlikehold
+  ["tips", "Dekk mister gjerne litt lufttrykk hver måned. Minn kunden på å sjekke trykket jevnlig."],
+  ["tips", "Lufttrykk bør måles på kalde dekk – etter kjøring viser måleren for høyt."],
+  ["tips", "DOT-merket på dekket viser produksjonsuke og år. Eldre dekk blir harde selv med godt mønster."],
+  ["tips", "Hjulbolter bør etterstrammes etter noen mil når hjulene er skiftet."],
+  ["tips", "Kulde reduserer batterikapasiteten. Svake startbatterier avsløres ofte de første kalde morgenene."],
+  ["tips", "Bremsevæske trekker til seg fukt over tid og bør skiftes etter produsentens intervall."],
+  ["tips", "Dårlig lukt eller mye dugg innvendig kan skyldes et tett kupéfilter."],
+  ["tips", "Viskerblader bør byttes omtrent én gang i året."],
+  ["tips", "Lyspærer bør byttes parvis, så lyset blir likt på begge sider."],
+  ["tips", "Rød varsellampe betyr som regel stopp nå – gul betyr sjekk snart."],
+  ["tips", "Motoroljen sjekkes best på flatt underlag etter at motoren har stått litt."],
+  ["tips", "Å rotere dekkene jevner ut slitasjen og gir lengre levetid."],
+  // elbil
+  ["elbil", "Elbiler bremser mye med motoren, så bremseskivene kan ruste fordi de brukes for lite."],
+  ["elbil", "Hurtiglading går mye saktere over omtrent 80 prosent batteri."],
+  ["elbil", "Et kaldt batteri lader saktere. Forvarming før hurtiglading sparer tid om vinteren."],
+  ["elbil", "Elbiler har også et vanlig 12-voltsbatteri – og det kan gå tomt."],
+  ["elbil", "Elbiler trenger ikke oljeskift, men bremser, dekk, kupéfilter og kjølevæske må fortsatt følges opp."],
+  ["elbil", "Elbiler har kortere rekkevidde om vinteren. Forvarming mens bilen lader sparer batteriet."],
+  ["elbil", "Mange elbilprodusenter anbefaler å lade til rundt 80 prosent i hverdagen."],
+  // kundeservice
+  ["service", "Les regnummer og telefonnummer høyt tilbake til kunden – det hindrer mange feil."],
+  ["service", "Notér kilometerstand ved innlevering."],
+  ["service", "Ta bilder av lånebilen ved utlevering og innlevering."],
+  ["service", "Gi kunden et realistisk tidspunkt – heller ring tidligere enn senere enn lovet."],
+  ["service", "Spør om kunden vil ha gamle deler med seg hjem."],
+  ["service", "Sjekk om kunden har dekk på dekkhotellet når bilen er inne på service."],
+  ["service", "Spør om EU-kontrollen nærmer seg når kunden likevel er innom."],
+  ["service", "Ring kunden før arbeid som går over avtalt pris – det sparer mye diskusjon ved henting."],
+  ["service", "Skriv i notatet hvem du snakket med og hva som ble avtalt. Historikken viser hvem som skrev det."],
+];
+
+// Sesongtips: [fra måned, fra dag, til måned, til dag, tekst]
+const SESONG = [
+  [9, 15, 11, 15, "Dekkskiftsesong: tilby kunder med dekk på dekkhotellet time i god tid før første snøfall."],
+  [10, 1, 11, 1, "Piggdekk er lov fra 16. oktober i Nordland, Troms og Finnmark, og fra 1. november i resten av landet."],
+  [10, 15, 2, 28, "Kalde morgener: tilby batteritest – svake batterier avsløres når temperaturen faller."],
+  [10, 15, 1, 31, "Sjekk frostvæske og vinterspylervæske når bilen er inne."],
+  [12, 1, 1, 15, "Sjekk hvilke kunder som har EU-kontroll som forfaller tidlig neste år."],
+  [3, 15, 5, 1, "Piggdekkperioden slutter første mandag etter andre påskedag i Sør-Norge, og 1. mai i Nord-Norge."],
+  [3, 20, 5, 15, "Vårsesong: tilby sommerdekk og sjekk mønsterdybden på dekkene fra hotellet."],
+  [4, 1, 5, 31, "Vårpuss: salt og sand sliter på understell og bremser. Tilby vask og bremsesjekk."],
+  [6, 1, 8, 15, "Ferietid: tilby feriesjekk av lys, dekk, bremser og væsker før langturen."],
+];
+function sesongNa(d) {
+  const nr = (d.getMonth() + 1) * 100 + d.getDate();
+  return SESONG.filter(([fm, fd, tm, td]) => {
+    const fra = fm * 100 + fd, til = tm * 100 + td;
+    return fra <= til ? nr >= fra && nr <= til : nr >= fra || nr <= til;
+  }).map((x) => ["sesong", x[4]]);
+}
+const UKEDAG = ["søn", "man", "tir", "ons", "tor", "fre", "lør"];
+const DAGER = ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"];
+const MND = ["januar", "februar", "mars", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "desember"];
+const LS = { notater: "verkstedpaaminner.notater", mapper: "verkstedpaaminner.mapper", oppslag: "verkstedpaaminner.oppslag",
+  sett: "verkstedpaaminner.sett", wipe: "verkstedpaaminner.wipe", migrert: "verkstedpaaminner.migrert", navn: "verkstedpaaminner.navn" };
+const FELLES = "felles", PRIVAT = "privat";
+
+let delte = [], private_ = [];      // notater
+let notater = [];
+let mapper = [];                    // delte, egendefinerte mapper
+let oppslag = [];
+let aktivMappe = "alle";
+let valgtId = null;
+let redigerer = null;
+let modus = "lokal";                // lokal | delt | frakoblet
+let db = null, user = null;
+let meg = { id: null, name: "", avatarUrl: "", isOwner: false };
+let kunLesing = false;
+let lokaltNavn = "";
+let wipeAt = 0;
+let visning = "liste";
+let planlagtAapen = false;
+let egneMaler = null;               // null = standardmalene
+let angreFn = null;               // liste | uke | maned
+let kalDato = new Date();                     // tidspunkt for siste fullstendige sletting (ms)
+const navnCache = {};
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const pad = (n) => String(n).padStart(2, "0");
+const lsLes = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+const lsSkriv = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+const kopiAv = (o) => JSON.parse(JSON.stringify(o));
+
+// ---------------------------------------------------------------- tid
+function iso(d) { return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`; }
+function isoDato(d) { return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
+function fraIso(s) {
+  if (!s) return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(s);
+  return m ? new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) : null;
+}
+function fraDato(s) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || "");
+  return m ? new Date(+m[1], +m[2] - 1, +m[3]) : null;
+}
+function sammeDag(a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); }
+function leggTilDager(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+
+function passer(g, start, d) {
+  switch (g) {
+    case "daily": return true;
+    case "weekdays": return d.getDay() !== 0 && d.getDay() !== 6;
+    case "weekly": return d.getDay() === start.getDay();
+    case "biweekly": return d.getDay() === start.getDay() && Math.floor(Math.round((d - start) / 86400000) / 7) % 2 === 0;
+    case "monthly": return d.getDate() === Math.min(start.getDate(), new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate());
+  }
+  return false;
+}
+
+function nesteTid(n, etter) {
+  const g = n.repeat || "none";
+  if (g === "none") return null;
+  const start = fraDato(n.date);
+  const tm = /^(\d{1,2}):(\d{2})$/.exec(n.time || "");
+  if (!start || !tm) return null;
+  const h = +tm[1], mi = +tm[2];
+  if (g === "once") return new Date(start.getFullYear(), start.getMonth(), start.getDate(), h, mi);
+  const idag = new Date(etter.getFullYear(), etter.getMonth(), etter.getDate());
+  let d = start > idag ? start : idag;
+  for (let i = 0; i < 800; i++) {
+    if (passer(g, start, d)) {
+      const dt = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, mi);
+      if (dt > etter) return dt;
+    }
+    d = leggTilDager(d, 1);
+  }
+  return null;
+}
+
+function visTid(s) {
+  const dt = fraIso(s);
+  if (!dt) return "—";
+  const i = new Date(), kl = `${pad(dt.getHours())}:${pad(dt.getMinutes())}`;
+  if (sammeDag(dt, i)) return "I dag " + kl;
+  if (sammeDag(dt, leggTilDager(i, 1))) return "I morgen " + kl;
+  if (sammeDag(dt, leggTilDager(i, -1))) return "I går " + kl;
+  return `${UKEDAG[dt.getDay()]} ${pad(dt.getDate())}.${pad(dt.getMonth() + 1)} ${kl}`;
+}
+function visMs(ms) { return ms ? visTid(iso(new Date(ms))) : "—"; }
+
+function gjentakTekst(n) {
+  const g = n.repeat || "none";
+  if (g === "none") return "—";
+  const s = fraDato(n.date), kl = n.time || "";
+  const navn = (GJ.find((x) => x[0] === g) || GJ[0])[1];
+  if (g === "once") return s ? `Én gang ${pad(s.getDate())}.${pad(s.getMonth() + 1)} ${kl}` : "Én gang";
+  if ((g === "weekly" || g === "biweekly") && s) return `${navn} (${UKEDAG[s.getDay()]}) ${kl}`;
+  if (g === "monthly" && s) return `Månedlig (den ${s.getDate()}.) ${kl}`;
+  return `${navn} ${kl}`;
+}
+
+// ---------------------------------------------------------------- virkedager
+const HORISONT = 5;   // virkedager før en sak flyttes fra «Lengre frem i tid» til «Under behandling»
+const helligCache = {};
+function paaskedag(y) {   // gregoriansk påskeberegning
+  const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const mnd = Math.floor((h + l - 7 * m + 114) / 31), dag = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(y, mnd - 1, dag);
+}
+function helligdager(y) {
+  if (helligCache[y]) return helligCache[y];
+  const p = paaskedag(y);
+  const sett = new Set([`${y}-01-01`, `${y}-05-01`, `${y}-05-17`, `${y}-12-25`, `${y}-12-26`]);
+  // skjærtorsdag, langfredag, påskedag, 2. påskedag, Kristi himmelfart, pinsedag, 2. pinsedag
+  [-3, -2, 0, 1, 39, 49, 50].forEach((o) => sett.add(isoDato(leggTilDager(p, o))));
+  return (helligCache[y] = sett);
+}
+function erVirkedag(d) { const w = d.getDay(); return w !== 0 && w !== 6 && !helligdager(d.getFullYear()).has(isoDato(d)); }
+function virkedagerTil(dt) {
+  const i = new Date();
+  let d = new Date(i.getFullYear(), i.getMonth(), i.getDate());
+  const maal = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+  let n = 0;
+  while (d < maal && n <= HORISONT) { d = leggTilDager(d, 1); if (erVirkedag(d)) n++; }
+  return n;
+}
+function innenforHorisont(n) { const d = fraIso(n.nextDue); return !d || virkedagerTil(d) <= HORISONT; }
+function aktiveresDato(dt) {
+  let d = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate()), n = 0;
+  while (n < HORISONT) { d = leggTilDager(d, -1); if (erVirkedag(d)) n++; }
+  return d;
+}
+
+function uke(d) {
+  const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+  const dag = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - dag);
+  const aar = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+  return Math.ceil(((t - aar) / 86400000 + 1) / 7);
+}
+
+function formatRegnr(r) {
+  r = (r || "").toUpperCase().replace(/\s/g, "");
+  return /^[A-ZÆØÅ]{2}\d+$/.test(r) ? r.slice(0, 2) + " " + r.slice(2) : r;
+}
+function skilt(r, klasse) { return r ? `<span class="skilt ${klasse}"><span>${esc(formatRegnr(r))}</span></span>` : ""; }
+
+// ---------------------------------------------------------------- brukere
+function hvemErJeg() { return modus === "delt" ? meg.id : null; }
+function forfatter() { return modus === "delt" && meg.id ? { by: meg.id } : { byName: lokaltNavn || "" }; }
+function navnPaa(o) {
+  if (!o) return "";
+  if (o.by) {
+    if (o.by === meg.id) return meg.name || "meg";
+    return navnCache[o.by] || "kollega";
+  }
+  return o.byName || "";
+}
+function tagg(o) { const n = navnPaa(o); return n ? "/" + n : ""; }
+
+async function hentNavn() {
+  if (!user || typeof user.profiles !== "function") return;
+  const ids = new Set();
+  const legg = (x) => { if (x && x !== meg.id && !(x in navnCache)) ids.add(x); };
+  notater.forEach((n) => { legg(n.createdBy); legg(n.updatedBy); legg(n.assignee); (n.log || []).forEach((l) => legg(l.by)); (n.comments || []).forEach((c) => legg(c.by)); });
+  mapper.forEach((m) => legg(m.by));
+  oppslag.forEach((o) => legg(o.by));
+  if (!ids.size) return;
+  ids.forEach((id) => { navnCache[id] = ""; });
+  try {
+    const p = await user.profiles([...ids]);
+    Object.values(p).forEach((x) => { navnCache[x.id] = x.name || ""; });
+    render();
+  } catch (e) {}
+}
+
+// ---------------------------------------------------------------- mapper
+function mappeNavn(id) {
+  if (id === FELLES) return "Felles";
+  if (id === PRIVAT) return "Mine (privat)";
+  const m = mapper.find((x) => x.id === id);
+  return m ? m.name : "Felles";
+}
+function mappeFor(n) {
+  if (n.folder === PRIVAT) return PRIVAT;
+  if (!n.folder || n.folder === FELLES || !mapper.some((m) => m.id === n.folder)) return FELLES;
+  return n.folder;
+}
+function privatTilgjengelig() { return modus !== "delt" || !!meg.id; }
+function alleMappeValg() {
+  const v = [[FELLES, "Felles"]].concat(mapper.slice().sort((a, b) => a.name.localeCompare(b.name, "nb")).map((m) => [m.id, m.name]));
+  if (privatTilgjengelig()) v.push([PRIVAT, "Mine (privat)"]);
+  return v;
+}
+
+// ---------------------------------------------------------------- lagring
+function nyId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+function logg(n, tekst) {
+  (n.log = n.log || []).push(Object.assign({ t: iso(new Date()), txt: tekst }, forfatter()));
+  if (n.log.length > 60) n.log = n.log.slice(-60);
+}
+function finn(id) { return notater.find((n) => n.id === id) || null; }
+function slaaSammen() { notater = delte.concat(private_); }
+function skrivAltLokalt() { if (SKY) return; lsSkriv(LS.notater, notater); lsSkriv(LS.mapper, mapper); lsSkriv(LS.oppslag, oppslag); }
+
+function samling(n) { return mappeFor(n) === PRIVAT ? "data/users/" + meg.id : "notater"; }
+function erPrivat(n) { return mappeFor(n) === PRIVAT; }
+
+function lagre(n, forrigeMappe) {
+  n.updated = Date.now();
+  const f = forfatter();
+  n.updatedBy = f.by || null;
+  n.updatedByName = f.byName || null;
+  const varPrivat = forrigeMappe === PRIVAT, blirPrivat = erPrivat(n);
+  delte = delte.filter((x) => x.id !== n.id);
+  private_ = private_.filter((x) => x.id !== n.id);
+  (blirPrivat ? private_ : delte).push(n);
+  slaaSammen();
+  if (modus !== "delt") skrivAltLokalt();
+  render();
+  if (modus === "delt" && db && !kunLesing) {
+    const data = kopiAv(n);
+    db.collection(samling(n)).doc(n.id).set(data).catch((e) => dbFeil(e, () => lagre(n)));
+    if (forrigeMappe !== undefined && varPrivat !== blirPrivat) {
+      const gammel = varPrivat ? "data/users/" + meg.id : "notater";
+      db.collection(gammel).doc(n.id).delete().catch(() => {});
+    }
+  }
+}
+
+function fjern(n) {
+  delte = delte.filter((x) => x.id !== n.id);
+  private_ = private_.filter((x) => x.id !== n.id);
+  slaaSammen();
+  if (valgtId === n.id) valgtId = null;
+  if (modus !== "delt") skrivAltLokalt();
+  render();
+  if (modus === "delt" && db && !kunLesing) return db.collection(samling(n)).doc(n.id).delete().catch((e) => dbFeil(e));
+  return Promise.resolve();
+}
+
+function lagreMappe(m) {
+  const i = mapper.findIndex((x) => x.id === m.id);
+  if (i < 0) mapper.push(m); else mapper[i] = m;
+  if (modus !== "delt") skrivAltLokalt();
+  render();
+  if (modus === "delt" && db && !kunLesing) db.collection("mapper").doc(m.id).set(kopiAv(m)).catch((e) => dbFeil(e));
+}
+function fjernMappe(m) {
+  mapper = mapper.filter((x) => x.id !== m.id);
+  if (modus !== "delt") skrivAltLokalt();
+  if (aktivMappe === m.id) aktivMappe = "alle";
+  render();
+  if (modus === "delt" && db && !kunLesing) db.collection("mapper").doc(m.id).delete().catch((e) => dbFeil(e));
+}
+function lagreOppslag(o) {
+  oppslag.push(o);
+  if (modus !== "delt") skrivAltLokalt();
+  render(); byggTicker(true);
+  if (modus === "delt" && db && !kunLesing) db.collection("oppslag").doc(o.id).set(kopiAv(o)).catch((e) => dbFeil(e));
+}
+function fjernOppslag(o) {
+  oppslag = oppslag.filter((x) => x.id !== o.id);
+  if (modus !== "delt") skrivAltLokalt();
+  render(); byggTicker(true);
+  if (modus === "delt" && db && !kunLesing) db.collection("oppslag").doc(o.id).delete().catch((e) => dbFeil(e));
+}
+
+let provdIgjen = false;
+function dbFeil(e, prov) {
+  const kode = e && e.code;
+  if (kode === "invalid_argument" || kode === "not_granted") {
+    kunLesing = true;
+    toast("Du har bare lesetilgang til denne listen. Endringer lagres ikke.");
+  } else if (kode === "quota_exceeded") {
+    toast("Lagringen er full. Bruk «Slett behandlede notater» under Innstillinger.");
+  } else if (kode === "unavailable" && prov && !provdIgjen) {
+    provdIgjen = true;
+    setTimeout(() => { provdIgjen = false; prov(); }, 800 + Math.random() * 1200);
+  } else {
+    toast("Kunne ikke lagre endringen. Sjekk nettforbindelsen.");
+  }
+  render();
+}
+
+function lesDocs(snap) { return snap.docs.filter((x) => x.exists).map((x) => Object.assign(kopiAv(x.data()), { id: x.id })); }
+
+async function kobleTilDelt() {
+  if (!window.claude || typeof window.claude.use !== "function") return;
+  try { user = await window.claude.use("user"); } catch (e) { user = null; }
+  if (user) {
+    try {
+      const m = await user.me();
+      meg = { id: m.id, name: m.name || "", avatarUrl: m.avatarUrl, isOwner: !!m.isOwner };
+    } catch (e) {}
+  }
+  let d = null;
+  try { d = await window.claude.use("db"); } catch (e) { d = null; }
+  if (!d) { render(); return; }
+  db = d;
+
+  db.collection("notater").onSnapshot((snap) => {
+    const liste = lesDocs(snap);
+    if (modus !== "delt") {
+      if (snap.metadata.fromCache) return;
+      modus = "delt";
+      migrerLokalt(liste);
+      lyttPrivat();
+    }
+    delte = liste;
+    slaaSammen();
+    render(); hentNavn(); sjekk();
+  }, frakoblet);
+  db.collection("mapper").onSnapshot((snap) => { if (!snap.metadata.fromCache || mapper.length === 0) { mapper = lesDocs(snap); render(); hentNavn(); } }, () => {});
+  db.doc("system/maler").onSnapshot((snap) => {
+    const d = snap.exists ? snap.data() : null;
+    egneMaler = d && Array.isArray(d.liste) ? kopiAv(d.liste) : null;
+    renderMalListe();
+  }, () => {});
+  db.doc("system/wipe").onSnapshot((snap) => {
+    const d = snap.exists ? snap.data() : null;
+    if (d && typeof d.at === "number" && d.at > wipeAt) utforWipe(d.at);
+  }, () => {});
+  db.collection("oppslag").onSnapshot((snap) => { oppslag = lesDocs(snap); ryddOppslag(); render(); byggTicker(true); hentNavn(); }, () => {});
+}
+
+// Kjøres hos hver bruker når eieren har trykket «Slett alle kundedata»
+function utforWipe(at) {
+  wipeAt = at;
+  const forLokal = lsLes(LS.wipe, 0) < at;
+  lsSkriv(LS.wipe, at);
+  if (forLokal) {
+    lsSkriv(LS.notater, lsLes(LS.notater, []).filter((n) => (n.updated || 0) > at));
+    lsSkriv(LS.oppslag, []);
+    lsSkriv(LS.sett, []);
+  }
+  slettGamlePrivate();
+  render();
+}
+function slettGamlePrivate() {
+  if (!wipeAt || !db || !meg.id) return;
+  const gamle = private_.filter((n) => (n.updated || 0) <= wipeAt);
+  if (!gamle.length) return;
+  private_ = private_.filter((n) => (n.updated || 0) > wipeAt);
+  slaaSammen();
+  gamle.forEach((n) => db.collection("data/users/" + meg.id).doc(n.id).delete().catch(() => {}));
+}
+
+function lyttPrivat() {
+  if (!meg.id) { private_ = []; return; }
+  private_ = [];
+  db.collection("data/users/" + meg.id).onSnapshot((snap) => {
+    private_ = lesDocs(snap).map((n) => Object.assign(n, { folder: PRIVAT }));
+    slettGamlePrivate();
+    slaaSammen(); render(); sjekk();
+  }, () => {});
+}
+
+function migrerLokalt(delteNaa) {
+  if (SKY) return;
+  if (lsLes(LS.migrert, false)) return;
+  lsSkriv(LS.migrert, true);
+  const lokale = lsLes(LS.notater, []);
+  if (delteNaa.length || !lokale.length) return;
+  lokale.filter((n) => n.folder !== PRIVAT).forEach((n) => {
+    n.folder = FELLES;
+    delteNaa.push(n);
+    db.collection("notater").doc(n.id).set(n).catch((e) => dbFeil(e));
+  });
+}
+
+function frakoblet() {
+  modus = "frakoblet";
+  db = null;
+  skrivAltLokalt();
+  render();
+  toast(SKY ? "Mistet tilgangen til databasen. Last siden på nytt, eller sjekk at kontoen din fortsatt er godkjent."
+    : "Mistet forbindelsen til den delte listen. Endringer lagres nå bare i denne nettleseren.");
+}
+
+// ---------------------------------------------------------------- handlinger
+function settStatus(n, status) {
+  if (status === "Behandlet" && n.status !== "Behandlet") n.ferdigAt = Date.now();
+  if (status !== "Behandlet") n.ferdigAt = null;
+  if (n.status !== status) { logg(n, `Status: ${visStatus(n.status)} → ${visStatus(status)}`); n.status = status; }
+  n.snart = false;
+  if (status !== "Ny") n.alerting = false;
+  lagre(n);
+}
+
+function utsett(n, minutter, iMorgen) {
+  const dt = iMorgen ? (() => { const d = leggTilDager(new Date(), 1); d.setHours(8, 0, 0, 0); return d; })() : new Date(Date.now() + minutter * 60000);
+  n.nextDue = iso(dt);
+  n.alerting = false;
+  logg(n, "Utsatt til " + visTid(n.nextDue));
+  lagre(n);
+}
+
+function flytt(n, mappe) {
+  if (mappeFor(n) === mappe) return;
+  const forrige = mappeFor(n);
+  logg(n, `Flyttet: ${mappeNavn(forrige)} → ${mappeNavn(mappe)}`);
+  n.folder = mappe;
+  lagre(n, forrige);
+}
+
+// ---------------------------------------------------------------- slettebekreftelse og høyreklikkmeny
+let slettId = null;
+function plasser(el, x, y) {
+  el.hidden = false;
+  const w = el.offsetWidth, h = el.offsetHeight;
+  el.style.left = Math.max(8, Math.min(x, innerWidth - w - 8)) + "px";
+  el.style.top = Math.max(8, y + h > innerHeight - 8 ? y - h - 8 : y) + "px";
+}
+function sporSlett(id, x, y) {
+  const n = finn(id);
+  if (!n) return;
+  lukkMeny();
+  skjulBoble();
+  slettId = id;
+  $("#bekreft-tekst b").textContent = n.title;
+  plasser($("#bekreft"), x - 252, y + 6);
+  $("#bekreft-nei").focus();
+}
+function sporSlettVed(id, el) { const r = el.getBoundingClientRect(); sporSlett(id, r.right, r.bottom); }
+function lukkBekreft() { $("#bekreft").hidden = true; slettId = null; }
+function lukkMeny() { $("#hoyremeny").hidden = true; }
+function visMeny(id, x, y) {
+  const n = finn(id);
+  if (!n) return;
+  lukkBekreft();
+  skjulBoble();
+  const knapp = (attr, ikon, tekst, klasse) => `<button type="button" role="menuitem" ${attr}${klasse ? ` class="${klasse}"` : ""}><span class="mi">${ikon}</span>${esc(tekst)}</button>`;
+  let html = `<div class="mtittel"></div>`
+    + knapp('data-handling="rediger"', "✎", "Rediger")
+    + knapp('data-handling="dupliser"', "⧉", "Dupliser") + "<hr>";
+  STATUSER.filter((st) => st !== "Ny" && st !== n.status).forEach((st) => { html += knapp(`data-status="${st}"`, IKON[st], st); });
+  html += "<hr>" + knapp('data-utsett="60"', "⏱", "Utsett 1 time") + knapp('data-utsett="imorgen"', "⏱", "Utsett til i morgen 08:00");
+  if (n.phone || n.regnr) html += "<hr>";
+  if (n.phone) html += knapp('data-handling="kopier-tlf"', "☎", "Kopier telefon");
+  if (n.regnr) html += knapp('data-handling="kopier-reg"', "▭", "Kopier regnr");
+  html += "<hr>" + knapp('data-handling="slett"', SOPPEL, "Slett …", "farlig");
+  const m = $("#hoyremeny");
+  m.innerHTML = html;
+  m.dataset.id = id;
+  m.querySelector(".mtittel").textContent = n.title;
+  plasser(m, x, y);
+  m.querySelector("button").focus();
+}
+
+function slett(n) { const for_ = kopiAv(n); fjern(n); visAngre("Notatet er slettet.", () => gjenopprett(for_, "sletting")); }
+
+function ryddOpp() {
+  const grense = Date.now() - 30 * 86400000;
+  const gamle = notater.filter((n) => n.status === "Behandlet" && ferdigTid(n) < grense);
+  if (!gamle.length) { toast("Ingen behandlede notater eldre enn 30 dager."); return; }
+  if (!confirm(`Slette ${gamle.length} behandlede notater som er eldre enn 30 dager?`)) return;
+  gamle.forEach(fjern);
+  toast(`${gamle.length} notater slettet.`);
+}
+
+function kanWipe() { return modus !== "delt" || meg.isOwner; }
+
+async function wipe() {
+  if (!kanWipe() || $("#wipe-bekreft").value.trim().toUpperCase() !== "SLETT") return;
+  const alle = notater.slice();
+  $("#wipe-knapp").disabled = true;
+  $("#wipe-knapp").textContent = "Sletter …";
+  const medMapper = $("#wipe-mapper").checked;
+  const naa = Date.now();
+  try {
+    if (modus === "delt" && db) {
+      // 1) signal til alle brukere: slett private notater og lokal lagring eldre enn dette tidspunktet
+      await db.doc("system/wipe").set(Object.assign({ at: naa, mapper: medMapper }, forfatter()));
+      // 2) slett alt delt innhold
+      const ting = alle.map((n) => db.collection(samling(n)).doc(n.id))
+        .concat(oppslag.map((o) => db.collection("oppslag").doc(o.id)))
+        .concat(medMapper ? mapper.map((m) => db.collection("mapper").doc(m.id)) : []);
+      for (let i = 0; i < ting.length; i += 20) await Promise.all(ting.slice(i, i + 20).map((r) => r.delete().catch(() => {})));
+    }
+  } catch (e) {
+    toast("Noe gikk galt under slettingen. Prøv igjen.");
+  } finally {
+    wipeAt = naa;
+    lsSkriv(LS.wipe, naa);
+    oppslag = []; if (medMapper) { mapper = []; aktivMappe = "alle"; }
+    delte = []; private_ = []; slaaSammen(); valgtId = null;
+    if (modus !== "delt") skrivAltLokalt();
+    lsSkriv(LS.notater, []);
+    lsSkriv(LS.sett, []);
+    $("#wipe-bekreft").value = "";
+    $("#wipe-knapp").textContent = "Slett alle kundedata";
+    $("#innst-dlg").close();
+    render();
+    $("#wipe-mapper").checked = false;
+    byggTicker(true);
+    toast(modus === "delt"
+      ? `Alle data er slettet. Kollegaenes private notater slettes i det øyeblikket appen deres er åpen.`
+      : `Alle data på denne PC-en er slettet (${alle.length} notater).`);
+  }
+}
+
+async function kopier(tekst, hva) {
+  if (!tekst) return;
+  try { await navigator.clipboard.writeText(tekst); toast(hva + " kopiert."); }
+  catch (e) { toast("Kunne ikke kopiere. Marker teksten og bruk Ctrl+C."); }
+}
+
+// ---------------------------------------------------------------- påminnelser
+function varslerMeg(n) {
+  if (erPrivat(n) || modus !== "delt") return true;
+  if (n.notify === "ansvarlig") return !n.assignee || n.assignee === meg.id;
+  return n.notify !== "meg" || n.createdBy === meg.id;
+}
+function ansvarNavn(n) { return n.assignee ? navnPaa({ by: n.assignee }) : (n.assigneeName || ""); }
+function erMin(n) {
+  if (modus === "delt") return !!n.assignee && n.assignee === meg.id;
+  return !!n.assigneeName && !!lokaltNavn && n.assigneeName.toLowerCase() === lokaltNavn.toLowerCase();
+}
+function ferdigTid(n) { return n.ferdigAt || n.updated || 0; }
+function arkivert(n) { return n.status === "Behandlet" && ferdigTid(n) < Date.now() - 14 * 86400000; }
+
+function sjekk() {
+  const naa = new Date();
+  const endret = [];
+  // personvern: fjern persondata 2 måneder etter at saken ble behandlet
+  const toMnd = Date.now() - 60 * 86400000;
+  for (const n of notater) {
+    if (n.status !== "Behandlet" || n.anonymisert || ferdigTid(n) >= toMnd) continue;
+    if (!(n.customer || n.phone || n.regnr || n.body || (n.comments && n.comments.length))) continue;
+    if (n.customer && n.title && n.title.toLowerCase().includes(n.customer.toLowerCase())) n.title = n.title.split(n.customer).join("[kunde]");
+    n.customer = ""; n.phone = ""; n.regnr = ""; n.body = ""; n.comments = [];
+    n.anonymisert = true;
+    (n.log = n.log || []).push({ t: iso(naa), txt: "Persondata fjernet automatisk (2 måneder etter behandling)" });
+    endret.push(n);
+  }
+  for (const n of notater) {
+    const nd = fraIso(n.nextDue);
+    if (!nd || nd > naa) continue;
+    const engangs = !n.repeat || n.repeat === "once" || n.repeat === "none";
+    if (engangs && n.status === "Behandlet") { n.nextDue = null; endret.push(n); continue; }
+    if (n.status === "Lest" || n.status === "Behandlet" || n.status === "Planlagt") { logg(n, `Status: ${visStatus(n.status)} → Ny (påminnelse)`); n.status = "Ny"; }
+    n.snart = false;
+    n.ferdigAt = null;
+    const neste = engangs ? null : nesteTid(n, naa);
+    n.nextDue = neste ? iso(neste) : null;
+    n.alerting = true;
+    n.alertAt = Date.now();
+    (n.log = n.log || []).push({ t: iso(naa), txt: "Påminnelse utløst" });
+    endret.push(n);
+  }
+  // saker langt frem i tid parkeres, og hentes frem når det er 5 virkedager igjen
+  for (const n of notater) {
+    if (!n.nextDue || n.status === "Behandlet" || n.alerting || endret.includes(n)) continue;
+    const innen = innenforHorisont(n);
+    if (!innen && (n.status === "Ny" || (n.status === "Under behandling" && n.snart))) {
+      n.log = n.log || [];
+      n.log.push({ t: iso(naa), txt: `Status: ${visStatus(n.status)} → Lengre frem i tid (mer enn ${HORISONT} virkedager igjen)` });
+      n.status = "Planlagt"; n.snart = false;
+      endret.push(n);
+    } else if (innen && n.status === "Planlagt") {
+      n.log = n.log || [];
+      n.log.push({ t: iso(naa), txt: `Nærmer seg: ${HORISONT} virkedager eller mindre igjen. Status: Lengre frem i tid → Under behandling` });
+      n.status = "Under behandling"; n.snart = true;
+      endret.push(n);
+    }
+  }
+  endret.forEach((n) => lagre(n));
+}
+
+function varsleNye() {
+  const sett = lsLes(LS.sett, []);
+  let nytt = false;
+  for (const n of notater) {
+    if (!n.alerting || !n.alertAt || !varslerMeg(n)) continue;
+    const nokkel = n.id + ":" + n.alertAt;
+    if (sett.includes(nokkel)) continue;
+    sett.push(nokkel);
+    nytt = true;
+    if (n.alertMode !== "blink") systemVarsel(n);
+  }
+  if (nytt) { lsSkriv(LS.sett, sett.slice(-300)); pip(); }
+}
+
+function systemVarsel(n) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  try {
+    const v = new Notification("Påminnelse: " + n.title, {
+      body: [formatRegnr(n.regnr), n.customer, n.phone].filter(Boolean).join("  ·  ") || (n.body || ""),
+      tag: n.id, requireInteraction: true
+    });
+    v.onclick = () => { window.focus(); valgtId = n.id; render(); v.close(); };
+  } catch (e) {}
+}
+
+let lyd = null;
+function pip() {
+  try {
+    lyd = lyd || new (window.AudioContext || window.webkitAudioContext)();
+    if (lyd.state === "suspended") lyd.resume();
+    [0, 0.22, 0.44].forEach((t, i) => {
+      const o = lyd.createOscillator(), g = lyd.createGain();
+      o.type = "square";
+      o.frequency.value = i === 2 ? 1175 : 880;
+      g.gain.setValueAtTime(0.0001, lyd.currentTime + t);
+      g.gain.exponentialRampToValueAtTime(0.12, lyd.currentTime + t + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, lyd.currentTime + t + 0.18);
+      o.connect(g).connect(lyd.destination);
+      o.start(lyd.currentTime + t);
+      o.stop(lyd.currentTime + t + 0.2);
+    });
+  } catch (e) {}
+}
+document.addEventListener("pointerdown", () => { try { lyd = lyd || new (window.AudioContext || window.webkitAudioContext)(); lyd.resume(); } catch (e) {} }, { once: true });
+
+const ORIGINAL_TITTEL = document.title;
+const FAVICON = $("#favicon").href;
+const FAVICON_ALARM = "data:image/svg+xml," + encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='15' fill='#e5484d'/><text x='16' y='23' font-size='20' text-anchor='middle' fill='#fff' font-family='Arial' font-weight='bold'>!</text></svg>");
+let fase = false;
+setInterval(() => {
+  const antall = mineVarsler().length;
+  fase = !fase;
+  if (antall) {
+    document.title = fase ? `(${antall}) Påminnelse!` : ORIGINAL_TITTEL;
+    $("#favicon").href = fase ? FAVICON_ALARM : FAVICON;
+  } else if (document.title !== ORIGINAL_TITTEL) {
+    document.title = ORIGINAL_TITTEL;
+    $("#favicon").href = FAVICON;
+  }
+}, 900);
+function mineVarsler() { return notater.filter((n) => n.alerting && varslerMeg(n)); }
+
+// ---------------------------------------------------------------- visning
+function passerFilter(n, f, sokAktiv) {
+  if (f !== "Arkiv" && !sokAktiv && arkivert(n)) return false;
+  switch (f) {
+    case "Alle": return true;
+    case "Aktive": return n.status !== "Behandlet";
+    case "Mine saker": return n.status !== "Behandlet" && erMin(n);
+    case "Arkiv": return arkivert(n);
+    case "Forfaller i dag": { const d = fraIso(n.nextDue); return !!d && sammeDag(d, new Date()); }
+    case "Haster": return n.priority === "Haster" && n.status !== "Behandlet";
+    case "Lengre frem i tid": return n.status === "Planlagt";
+    default: return n.status === f;
+  }
+}
+function iMappe(n, m) { return m === "alle" || mappeFor(n) === m; }
+
+function rang(n) { return n.status === "Behandlet" ? 2 : n.status === "Planlagt" ? 1 : 0; }
+function sortert(liste) {
+  return (liste || notater).slice().sort((a, b) =>
+    rang(a) - rang(b) ||
+    (!(a.alerting && varslerMeg(a))) - (!(b.alerting && varslerMeg(b))) ||
+    PRIORITETER.indexOf(b.priority) - PRIORITETER.indexOf(a.priority) ||
+    (a.nextDue || "9999").localeCompare(b.nextDue || "9999"));
+}
+
+function render() {
+  if (aktivMappe !== "alle" && aktivMappe !== FELLES && aktivMappe !== PRIVAT && !mapper.some((m) => m.id === aktivMappe)) aktivMappe = "alle";
+  if (aktivMappe === PRIVAT && !privatTilgjengelig()) aktivMappe = "alle";
+  renderMapper();
+  renderListe();
+  renderStatistikk();
+  renderDetalj();
+  renderVarsler();
+  renderTopp();
+  varsleNye();
+}
+
+function renderMapper() {
+  const aktiveI = (id) => notater.filter((n) => n.status !== "Behandlet" && iMappe(n, id));
+  const alarmI = (id) => notater.some((n) => n.alerting && varslerMeg(n) && iMappe(n, id));
+  const rad = (id, ik, navn) => `<li><button class="mappe${aktivMappe === id ? " aktiv" : ""}" data-mappe="${esc(id)}">
+      <span class="ik">${ik}</span><span class="navn">${esc(navn)}</span>${alarmI(id) ? `<span class="prikk" title="Aktivt varsel"></span>` : ""}
+      <span class="ant">${aktiveI(id).length}</span></button></li>`;
+  const egne = mapper.slice().sort((a, b) => a.name.localeCompare(b.name, "nb"));
+  let html = rad("alle", "▦", "Alle mapper") + rad(FELLES, "★", "Felles");
+  html += egne.map((m) => rad(m.id, "▸", m.name)).join("");
+  if (privatTilgjengelig()) html += `<li class="skille" aria-hidden="true"></li>` + rad(PRIVAT, "🔒", "Mine (privat)");
+  $("#mappeliste").innerHTML = html;
+
+  const m = mapper.find((x) => x.id === aktivMappe);
+  $("#mappe-tittel").textContent = aktivMappe === "alle" ? "Alle mapper" : mappeNavn(aktivMappe);
+  let info = "";
+  if (aktivMappe === PRIVAT) info = modus === "delt" ? "Bare du ser denne mappen" : "";
+  else if (aktivMappe !== "alle" && modus === "delt") info = "Delt med alle";
+  if (m && tagg(m)) info += `${info ? " · " : ""}opprettet av ${tagg(m)}`;
+  $("#mappe-info").textContent = info;
+  $("#mappe-rediger").hidden = !m;
+  $("#mappe-slett").hidden = !m;
+}
+
+function synligeNotater(utenDagsfilter) {
+  const s = $("#sok").value.toLowerCase().replace(/\s/g, "");
+  let f = $("#filter").value;
+  if (utenDagsfilter && f === "Forfaller i dag") f = "Alle";
+  return sortert().filter((n) => iMappe(n, aktivMappe) && passerFilter(n, f, !!s) && (!s ||
+    [n.title, n.customer, n.phone, n.regnr, n.body, n.category, ansvarNavn(n), (n.comments || []).map((c) => c.txt).join(" ")].join(" ").toLowerCase().replace(/\s/g, "").includes(s)));
+}
+
+function renderListe() {
+  document.querySelectorAll("[data-vis]").forEach((b) => b.classList.toggle("aktiv", b.dataset.vis === visning));
+  const kal = visning !== "liste";
+  $("#tabell").hidden = kal;
+  $("#kalender").hidden = !kal;
+  if (kal) { $("#ingen").hidden = true; renderKalender(); return; }
+  const synlige = synligeNotater(false);
+  const radHtml = (n) => {
+    const kl = ["st-" + n.status.split(" ")[0]];
+    if (n.id === valgtId) kl.push("valgt");
+    if (n.alerting && n.alertMode === "blink" && varslerMeg(n)) kl.push("blink");
+    if (n.snart && n.status === "Under behandling") kl.push("snart");
+    const deler = [];
+    if (aktivMappe === "alle") deler.push(mappeNavn(mappeFor(n)));
+    if (ansvarNavn(n)) deler.push("→ /" + ansvarNavn(n));
+    if (n.comments && n.comments.length) deler.push("💬 " + n.comments.length);
+    const under = deler.length ? `<small>${esc(deler.join("  ·  "))}</small>` : "";
+    const sist = n.updated ? `${esc(visMs(n.updated))} <span class="tag">${esc(tagg({ by: n.updatedBy, byName: n.updatedByName }))}</span>` : "—";
+    return `<tr class="${kl.join(" ")}" data-id="${esc(n.id)}" tabindex="0">
+      <td>${IKON[n.status] || ""}&nbsp; ${esc(visStatus(n.status))}${n.snart && n.status === "Under behandling" ? KAL_IKON : ""}</td>
+      <td class="pri">${n.priority === "Haster" ? "▲▲" : n.priority === "Høy" ? "▲" : ""}</td>
+      <td>${skilt(n.regnr, "liten")}</td>
+      <td class="k-kunde">${esc(n.customer)}</td>
+      <td class="tittel">${esc(n.title)}${under}</td>
+      <td class="k-kat">${esc(n.category)}</td>
+      <td>${esc(visTid(n.nextDue))}</td>
+      <td class="k-gj">${esc(gjentakTekst(n))}</td>
+      <td class="k-endret">${sist}</td>
+      <td class="k-slett"><button type="button" class="soppel" data-slett="${esc(n.id)}" aria-label="Slett notat" title="Slett">${SOPPEL}</button></td></tr>`;
+  };
+  const visPlanlagt = planlagtAapen || $("#filter").value === "Lengre frem i tid";
+  const antPlanlagt = synlige.filter((n) => n.status === "Planlagt").length;
+  let html = "", gruppeLagt = false;
+  for (const n of synlige) {
+    if (n.status === "Planlagt") {
+      if (!gruppeLagt) {
+        gruppeLagt = true;
+        html += `<tr class="gruppe" data-gruppe="planlagt" tabindex="0"><td colspan="10">${visPlanlagt ? "▾" : "▸"}&nbsp; ◷ Lengre frem i tid · mer enn ${HORISONT} virkedager til påminnelsen (${antPlanlagt})${visPlanlagt ? "" : " – klikk for å vise"}</td></tr>`;
+      }
+      if (!visPlanlagt) continue;
+    }
+    html += radHtml(n);
+  }
+  $("#rader").innerHTML = html;
+  const ingen = $("#ingen");
+  ingen.hidden = synlige.length > 0;
+  if (!synlige.length) {
+    ingen.textContent = notater.some((n) => iMappe(n, aktivMappe))
+      ? "Ingen notater passer søket eller filteret."
+      : "Ingen notater her ennå. Trykk «+ Nytt notat» for å legge inn det første.";
+  }
+}
+
+// ---------------------------------------------------------------- kalender
+function mandagFor(d) { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); return leggTilDager(x, -((x.getDay() + 6) % 7)); }
+
+function forekomster(n, fra, til) {
+  const ut = [];
+  const g = n.repeat || "none", start = fraDato(n.date), tm = /^(\d{1,2}):(\d{2})$/.exec(n.time || "");
+  if (g !== "none" && start && tm) {
+    if (g === "once") {
+      const d = new Date(start.getFullYear(), start.getMonth(), start.getDate(), +tm[1], +tm[2]);
+      if (d >= fra && d < til) ut.push(d);
+    } else {
+      for (let d = new Date(fra); d < til; d = leggTilDager(d, 1)) {
+        if (d >= start && passer(g, start, d)) ut.push(new Date(d.getFullYear(), d.getMonth(), d.getDate(), +tm[1], +tm[2]));
+      }
+    }
+  }
+  const nd = fraIso(n.nextDue);
+  if (nd && nd >= fra && nd < til && !ut.some((x) => +x === +nd)) ut.push(nd);
+  return ut;
+}
+
+function hendelserI(fra, til) {
+  const perDag = {};
+  for (const n of synligeNotater(true)) {
+    for (const d of forekomster(n, fra, til)) (perDag[isoDato(d)] = perDag[isoDato(d)] || []).push({ n, d });
+  }
+  Object.values(perDag).forEach((l) => l.sort((a, b) => a.d - b.d));
+  return perDag;
+}
+
+const STATUS_C = { "Ny": "var(--gul)", "Lest": "var(--bla)", "Under behandling": "var(--oransje)", "Behandlet": "var(--gronn)", "Planlagt": "var(--graa)" };
+function hendelseHtml({ n, d }, kort) {
+  const kl = ["hendelse"];
+  if (n.id === valgtId) kl.push("valgt");
+  if (n.status === "Behandlet") kl.push("ferdig");
+  if (n.alerting && varslerMeg(n)) kl.push("alarm");
+  if (n.snart && n.status === "Under behandling") kl.push("snart");
+  const c = n.priority === "Haster" && n.status !== "Behandlet" ? "var(--rod)" : STATUS_C[n.status];
+  const tittel = `${pad(d.getHours())}:${pad(d.getMinutes())} ${n.title}${n.regnr ? " · " + formatRegnr(n.regnr) : ""}${n.customer ? " · " + n.customer : ""}`;
+  return `<button type="button" class="${kl.join(" ")}" style="--c:${c}" data-id="${esc(n.id)}" aria-label="${esc(tittel)}">
+    <span class="l"><time>${pad(d.getHours())}:${pad(d.getMinutes())}</time>${n.regnr && !kort ? `<span class="r">${esc(formatRegnr(n.regnr))}</span>` : ""}</span>
+    <span class="t">${esc(n.title)}</span></button>`;
+}
+
+function renderKalender() {
+  const el = $("#kalender");
+  const idag = new Date();
+  let nav, kropp;
+  if (visning === "uke") {
+    const man = mandagFor(kalDato), son = leggTilDager(man, 6);
+    const perDag = hendelserI(man, leggTilDager(man, 7));
+    const tittel = man.getMonth() === son.getMonth()
+      ? `${man.getDate()}.–${son.getDate()}. ${MND[son.getMonth()]}`
+      : `${man.getDate()}. ${MND[man.getMonth()].slice(0, 3)} – ${son.getDate()}. ${MND[son.getMonth()].slice(0, 3)}`;
+    nav = `Uke ${uke(man)} · ${tittel}`;
+    kropp = `<div class="uke">` + [0, 1, 2, 3, 4, 5, 6].map((i) => {
+      const d = leggTilDager(man, i), key = isoDato(d), liste = perDag[key] || [];
+      const kl = ["dag"];
+      if (sammeDag(d, idag)) kl.push("idag");
+      if (!erVirkedag(d)) kl.push("helg");
+      return `<div class="${kl.join(" ")}" data-dato="${key}">
+        <div class="dag-hode"><span>${UKEDAG[d.getDay()]}</span><b>${d.getDate()}</b>${i < 5 && !erVirkedag(d) ? `<span title="Helligdag">helligdag</span>` : ""}${liste.length ? `<span class="ant" title="${liste.length} påminnelser">${liste.length}</span>` : ""}</div>
+        ${liste.map((h) => hendelseHtml(h, false)).join("")}</div>`;
+    }).join("") + `</div>`;
+  } else {
+    const forste = new Date(kalDato.getFullYear(), kalDato.getMonth(), 1);
+    const start = mandagFor(forste);
+    const perDag = hendelserI(start, leggTilDager(start, 42));
+    nav = `${MND[forste.getMonth()].charAt(0).toUpperCase() + MND[forste.getMonth()].slice(1)} ${forste.getFullYear()}`;
+    let celler = ["man", "tir", "ons", "tor", "fre", "lør", "søn"].map((u) => `<div class="ukedag">${u}</div>`).join("");
+    for (let i = 0; i < 42; i++) {
+      const d = leggTilDager(start, i), key = isoDato(d), liste = perDag[key] || [];
+      if (i >= 35 && d.getMonth() !== forste.getMonth()) break;
+      const kl = ["celle"];
+      if (d.getMonth() !== forste.getMonth()) kl.push("utenfor");
+      if (sammeDag(d, idag)) kl.push("idag");
+      celler += `<div class="${kl.join(" ")}" data-dato="${key}">
+        <button type="button" class="nr" data-gaa-til="${key}" title="Vis uke">${d.getDate()}</button>
+        ${liste.slice(0, 3).map((h) => hendelseHtml(h, true)).join("")}
+        ${liste.length > 3 ? `<button type="button" class="flere" data-gaa-til="${key}">+${liste.length - 3} flere</button>` : ""}</div>`;
+    }
+    kropp = `<div class="maned">${celler}</div>`;
+  }
+  el.innerHTML = `<div class="kal-nav">
+      <button type="button" class="knapp liten" data-kal="-1" aria-label="Forrige">‹</button>
+      <h3>${esc(nav)}</h3>
+      <button type="button" class="knapp liten" data-kal="1" aria-label="Neste">›</button>
+      <button type="button" class="knapp liten" data-kal="0">I dag</button>
+    </div>${kropp}
+    <div class="kal-tips">Klikk på en tom plass i en dag for å lage en påminnelse den dagen. Gjentakende påminnelser vises på alle dagene de gjelder.</div>`;
+}
+
+function renderStatistikk() {
+  const aktive = notater.filter((n) => n.status !== "Behandlet" && iMappe(n, aktivMappe));
+  const idag = new Date();
+  $("#t-ny").textContent = aktive.filter((n) => n.status === "Ny").length;
+  $("#t-under").textContent = aktive.filter((n) => n.status === "Under behandling").length;
+  $("#t-idag").textContent = aktive.filter((n) => { const d = fraIso(n.nextDue); return d && sammeDag(d, idag); }).length;
+  $("#t-haster").textContent = aktive.filter((n) => n.priority === "Haster" && n.status !== "Planlagt").length;
+  $("#t-senere").textContent = aktive.filter((n) => n.status === "Planlagt").length;
+  $("#maaler").innerHTML = maalerSvg(aktive.filter((n) => n.status === "Ny" || n.status === "Under behandling").length);
+  const antall = mineVarsler().length;
+  $("#alarm").textContent = antall ? `● ${antall} ${antall === 1 ? "varsel" : "varsler"}` : "";
+}
+
+function renderTopp() {
+  const el = $("#lagring");
+  el.className = "brikke";
+  if (modus === "delt") {
+    el.classList.add(kunLesing ? "feil" : "delt");
+    el.textContent = kunLesing ? "Delt liste (kun lesing)" : "Delt i sanntid";
+  } else if (modus === "frakoblet") {
+    el.classList.add("feil");
+    el.textContent = "Frakoblet – lagres lokalt";
+  } else {
+    el.textContent = SKY ? "Kobler til …" : "Lagret i denne nettleseren";
+  }
+  const b = $("#bruker");
+  if (modus === "delt" && (meg.name || meg.id)) {
+    b.innerHTML = `<img alt="" src="${esc(meg.avatarUrl)}"><span>Innlogget som <b></b>${meg.isOwner ? (SKY ? " · admin" : " · eier") : ""}</span>`;
+    b.querySelector("b").textContent = meg.name || "deg";
+  } else if (lokaltNavn) {
+    b.innerHTML = `<span>Bruker: <b></b></span>`;
+    b.querySelector("b").textContent = lokaltNavn;
+  } else {
+    b.innerHTML = `<button class="knapp liten" id="sett-navn">Sett navnet ditt</button>`;
+  }
+}
+
+function polar(cx, cy, r, grader) { const a = grader * Math.PI / 180; return [cx + r * Math.cos(a), cy + r * Math.sin(a)]; }
+function bue(r, fra, til, stor) {
+  const [x1, y1] = polar(29, 29, r, fra), [x2, y2] = polar(29, 29, r, til);
+  return `M${x1.toFixed(2)} ${y1.toFixed(2)} A${r} ${r} 0 ${stor} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+}
+const HOT = 15;       // antall nye/under behandling før nålen står i rødt felt
+function maalerSvg(antall) {
+  const cx = 39, cy = 46, r = 30, A0 = 205, A1 = 335, MAKS = 20;
+  const vinkel = (v) => A0 + (Math.min(Math.max(v, 0), MAKS) / MAKS) * (A1 - A0);
+  const p = (rad, a) => polar(cx, cy, rad, a).map((x) => x.toFixed(2));
+  const bueC = (rad, fra, til) => { const [x1, y1] = p(rad, fra), [x2, y2] = p(rad, til); return `M${x1} ${y1} A${rad} ${rad} 0 0 1 ${x2} ${y2}`; };
+  const hot = antall >= HOT;
+  let streker = "";
+  for (let v = 0; v <= MAKS; v += 5) {
+    const [x1, y1] = p(r - 6, vinkel(v)), [x2, y2] = p(r + 1, vinkel(v));
+    streker += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${v >= HOT ? "var(--rod)" : "var(--dempet)"}" stroke-width="${v % 10 === 0 ? 2 : 1.5}"/>`;
+  }
+  const [nx, ny] = p(r - 4, vinkel(antall));
+  const [cX, cY] = p(r + 7, A0), [hX, hY] = p(r + 7, A1);
+  const nal = hot ? "var(--rod)" : "var(--gul)";
+  const tekst = `${antall} ${antall === 1 ? "sak" : "saker"} nye eller under behandling${hot ? " – det koker!" : ""}`;
+  $("#maaler").classList.toggle("hot", hot);
+  $("#maaler").setAttribute("aria-label", "Temperaturmåler: " + tekst);
+  return `<title>${esc(tekst)}</title>
+    <path d="${bueC(r, A0, vinkel(HOT))}" fill="none" stroke="var(--bla)" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+    <path d="${bueC(r, vinkel(HOT), A1)}" fill="none" stroke="var(--rod)" stroke-width="4" stroke-linecap="round"/>
+    ${streker}
+    <text x="${cX}" y="${(+cY + 4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--bla)" font-family="Bahnschrift, Barlow Semi Condensed, sans-serif">C</text>
+    <text x="${hX}" y="${(+hY + 4).toFixed(1)}" text-anchor="middle" font-size="10" font-weight="700" fill="var(--rod)" font-family="Bahnschrift, Barlow Semi Condensed, sans-serif">H</text>
+    <g transform="translate(${cx - 3.5} ${cy - 25})" fill="none" stroke="var(--dempet)" stroke-width="1.3">
+      <path d="M2 1.5 a1.5 1.5 0 0 1 3 0 v6.3 a3 3 0 1 1 -3 0 z"/>
+      <path d="M-3 12.5 q1.5 -1.2 3 0 t3 0 t3 0 t3 0 t3 0"/>
+    </g>
+    <line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="${nal}" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="${cx}" cy="${cy}" r="4.5" fill="${nal}"/>
+    <text x="${cx}" y="57" text-anchor="middle" font-size="9" font-weight="700" fill="${hot ? "var(--rod)" : "var(--tekst)"}" font-family="Bahnschrift, Barlow Semi Condensed, sans-serif">${antall}${hot ? " HOT" : ""}</text>`;
+}
+
+function statusFarge(s) { return { "Ny": "var(--gul-tekst)", "Lest": "var(--bla)", "Under behandling": "var(--oransje)", "Behandlet": "var(--gronn)", "Planlagt": "var(--dempet)" }[s]; }
+
+function renderDetalj() {
+  const n = finn(valgtId);
+  const el = $("#detalj");
+  if (!n) { el.innerHTML = `<div class="tom">Velg et notat for å se detaljer,<br>eller trykk «+ Nytt notat».</div>`; return; }
+  const loggHtml = (n.log || []).slice().reverse().map((l) => {
+    const t = fraIso(l.t);
+    const tid = t ? `${pad(t.getDate())}.${pad(t.getMonth() + 1)} ${pad(t.getHours())}:${pad(t.getMinutes())}` : esc(l.t);
+    const av = tagg(l);
+    return `<div><time>${tid}</time>${esc(l.txt)}${av ? `<span class="av">${esc(av)}</span>` : ""}</div>`;
+  }).join("");
+  const mappeValg = alleMappeValg().map(([id, navn]) => `<option value="${esc(id)}"${mappeFor(n) === id ? " selected" : ""}>${esc(navn)}</option>`).join("");
+  const opprettet = tagg({ by: n.createdBy, byName: n.createdByName });
+  const endret = tagg({ by: n.updatedBy, byName: n.updatedByName });
+  const utkast = $("#k-tekst") && $("#k-tekst").dataset.id === n.id ? { v: $("#k-tekst").value, fokus: document.activeElement === $("#k-tekst") } : null;
+  const rn = (n.regnr || "").toUpperCase().replace(/\s/g, "");
+  const andreSaker = rn ? notater.filter((x) => x.id !== n.id && (x.regnr || "").toUpperCase().replace(/\s/g, "") === rn).length : 0;
+  const kommentarer = (n.comments || []).map((c) => `<div class="kommentar"><div class="k-hode"><b>${esc(tagg(c) || "")}</b> ${esc(visTid(c.t))}</div><div>${esc(c.txt)}</div></div>`).join("");
+  el.innerHTML = `
+    ${skilt(n.regnr, "stor")}
+    ${andreSaker ? `<div style="margin-top:6px"><button class="lenke" data-handling="vis-bil">${andreSaker} ${andreSaker === 1 ? "annen sak" : "andre saker"} på denne bilen</button></div>` : ""}
+    <h2>${esc(n.title)}</h2>
+    ${n.anonymisert ? `<div class="anonym">Persondata er fjernet automatisk av personvernhensyn.</div>` : ""}
+    <dl class="info-liste">
+      <dt>Kunde</dt><dd>${esc(n.customer || "—")}</dd>
+      <dt>Telefon</dt><dd>${esc(n.phone || "—")}</dd>
+      <dt>Kategori</dt><dd>${esc(n.category || "—")}</dd>
+      <dt>Prioritet</dt><dd style="color:${n.priority === "Haster" ? "var(--rod)" : "inherit"}">${esc(n.priority)}</dd>
+      <dt>Ansvarlig</dt><dd>${ansvarNavn(n) ? esc("/" + ansvarNavn(n)) : "—"}</dd>
+      <dt>Status</dt><dd style="color:${statusFarge(n.status)};font-weight:600">${IKON[n.status] || ""}&nbsp; ${esc(visStatus(n.status))}${n.snart && n.status === "Under behandling" ? KAL_IKON + `<span style="font-weight:400;color:var(--dempet)"> nærmer seg</span>` : ""}${n.status === "Planlagt" && fraIso(n.nextDue) ? `<div style="font-weight:400;color:var(--dempet);font-size:13px">Flyttes til Under behandling ${esc(UKEDAG[aktiveresDato(fraIso(n.nextDue)).getDay()])} ${aktiveresDato(fraIso(n.nextDue)).getDate()}.${aktiveresDato(fraIso(n.nextDue)).getMonth() + 1}.</div>` : ""}</dd>
+      <dt>Neste varsel</dt><dd>${esc(visTid(n.nextDue))}${n.nextDue && n.notify === "meg" && modus === "delt" && !erPrivat(n) ? " (bare oppretter)" : ""}</dd>
+      <dt>Gjentakelse</dt><dd>${esc(gjentakTekst(n))}</dd>
+      <dt>Opprettet</dt><dd>${esc(visTid(n.created))} ${esc(opprettet)}</dd>
+      <dt>Sist endret</dt><dd>${esc(visMs(n.updated))} ${esc(endret)}</dd>
+    </dl>
+    <div class="rad">
+      ${STATUSER.filter((s) => s !== "Ny").map((s) => `<button class="knapp liten${s === "Behandlet" ? " gul" : ""}" data-status="${s}" ${n.status === s ? "disabled" : ""}>${IKON[s]}&nbsp; ${s}</button>`).join("")}
+    </div>
+    <div class="rad"><span class="etikett">Utsett</span>
+      <button class="knapp liten" data-utsett="15">15 min</button>
+      <button class="knapp liten" data-utsett="60">1 time</button>
+      <button class="knapp liten" data-utsett="180">3 timer</button>
+      <button class="knapp liten" data-utsett="imorgen">I morgen 08:00</button>
+    </div>
+    <div class="rad"><span class="etikett">Mappe</span>
+      <select class="felt" id="d-mappe" aria-label="Flytt til mappe" style="padding:3px 6px;font-size:14px">${mappeValg}</select>
+    </div>
+    <div class="rad">
+      <button class="knapp liten" data-handling="rediger">Rediger</button>
+      <button class="knapp liten" data-handling="dupliser">Dupliser</button>
+      ${n.phone ? `<button class="knapp liten" data-handling="kopier-tlf">Kopier telefon</button>` : ""}
+      ${n.regnr ? `<button class="knapp liten" data-handling="kopier-reg">Kopier regnr</button>` : ""}
+      <button class="knapp liten fare-knapp" data-handling="slett">Slett</button>
+    </div>
+    <div class="etikett-blokk">Notat</div>
+    <div class="notat-tekst">${esc(n.body || "")}</div>
+    <div class="etikett-blokk">Kommentarer${n.comments && n.comments.length ? ` (${n.comments.length})` : ""}</div>
+    ${kommentarer}
+    <form class="kommentar-ny" id="k-skjema"><input class="felt" id="k-tekst" data-id="${esc(n.id)}" maxlength="500" autocomplete="off" placeholder="Skriv en kommentar …"><button class="knapp liten">Legg til</button></form>
+    <div class="etikett-blokk">Historikk</div>
+    <div class="logg">${loggHtml || "—"}</div>`;
+  if (utkast) { $("#k-tekst").value = utkast.v; if (utkast.fokus) $("#k-tekst").focus(); }
+}
+
+function renderVarsler() {
+  const aktive = sortert(mineVarsler()).filter((n) => n.alertMode !== "blink");
+  const dlg = $("#varsler");
+  if (!aktive.length) { if (dlg.open) dlg.close(); return; }
+  $("#varsel-liste").innerHTML = aktive.map((n) => {
+    const fyrt = n.alertAt ? new Date(n.alertAt) : new Date();
+    const meta = [n.customer, n.phone, n.category].filter(Boolean).map(esc).join("&nbsp;&nbsp;·&nbsp;&nbsp;");
+    const av = tagg({ by: n.createdBy, byName: n.createdByName });
+    return `<section class="varsel-kort" data-id="${esc(n.id)}">
+      <div class="varsel-topp"><strong>Påminnelse</strong>
+        ${n.priority !== "Normal" ? `<span class="merke-pri">${esc(n.priority)}</span>` : ""}
+        <span class="mappe-merke">${esc(mappeNavn(mappeFor(n)))}${av ? " · " + esc(av) : ""}</span>
+        <time>${pad(fyrt.getHours())}:${pad(fyrt.getMinutes())}</time></div>
+      <h3>${esc(n.title)}</h3>
+      ${skilt(n.regnr, "")}
+      ${meta ? `<div class="meta">${meta}</div>` : ""}
+      ${n.body ? `<div class="notat-tekst">${esc(n.body)}</div>` : ""}
+      <div class="rad" style="margin-top:14px">
+        <button class="knapp gul" data-status="Behandlet">✔&nbsp; Behandlet</button>
+        <button class="knapp" data-status="Under behandling">◐&nbsp; Under behandling</button>
+        <button class="knapp" data-status="Lest">○&nbsp; Lest</button>
+      </div>
+      <div class="rad"><span class="etikett">Utsett</span>
+        <button class="knapp liten" data-utsett="5">5 min</button>
+        <button class="knapp liten" data-utsett="15">15 min</button>
+        <button class="knapp liten" data-utsett="60">1 time</button>
+        <button class="knapp liten" data-utsett="imorgen">I morgen 08:00</button>
+      </div></section>`;
+  }).join("");
+  if (!dlg.open && !$("#rediger").open) { try { dlg.showModal(); } catch (e) { dlg.show(); } }
+}
+
+let toastTimer = null;
+function visAngre(tekst, fn) {
+  angreFn = fn;
+  const t = $("#toast");
+  t.textContent = "";
+  const sp = document.createElement("span");
+  sp.textContent = tekst;
+  const b = document.createElement("button");
+  b.className = "angre"; b.type = "button"; b.textContent = "Angre";
+  b.addEventListener("click", utforAngre);
+  t.append(sp, b);
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; angreFn = null; }, 8000);
+}
+function utforAngre() { const fn = angreFn; angreFn = null; $("#toast").hidden = true; if (fn) fn(); }
+function gjenopprett(for_, tekst) {
+  const naa = finn(for_.id);
+  const n = kopiAv(for_);
+  (n.log = n.log || []).push(Object.assign({ t: iso(new Date()), txt: "Angret: " + tekst }, forfatter()));
+  valgtId = n.id;
+  lagre(n, naa ? mappeFor(naa) : undefined);
+  toast("Angret.");
+}
+function medAngre(n, tekst, endring) {
+  const for_ = kopiAv(n);
+  endring();
+  visAngre(tekst, () => gjenopprett(for_, tekst.toLowerCase()));
+}
+function toast(tekst) {
+  const t = $("#toast");
+  angreFn = null;
+  t.textContent = tekst;
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, 4500);
+}
+
+// ---------------------------------------------------------------- nyhetsbånd
+const rolig = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let tickerSignatur = "", tickerBygget = 0, roligIndeks = 0, tickerElementer = [];
+function stokk(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function aktiveOppslag() { const naa = Date.now(); return oppslag.filter((o) => !o.utloper || o.utloper > naa).sort((a, b) => b.created - a.created); }
+
+function tickerInnhold() {
+  const naa = new Date();
+  const idag = notater.filter((n) => n.status !== "Behandlet" && fraIso(n.nextDue) && sammeDag(fraIso(n.nextDue), naa)).length;
+  const aapne = notater.filter((n) => n.status !== "Behandlet").length;
+  const lapper = aktiveOppslag().map((o) => ({ k: "oppslag", t: o.text, av: tagg(o) }));
+  const fakta = stokk(NYHETER.concat(sesongNa(naa), sesongNa(naa))).map(([k, t]) => ({ k, t }));   // sesongtips teller dobbelt
+  const ut = lapper.slice();
+  ut.push({ k: "status", t: `${DAGER[naa.getDay()]} ${naa.getDate()}. ${MND[naa.getMonth()]}, uke ${uke(naa)}: ${aapne} åpne saker, ${idag} påminnelser i dag.` });
+  // oppslagene flettes inn etter hvert tredje faktum, så de vises omtrent hvert minutt
+  fakta.forEach((f, i) => {
+    ut.push(f);
+    if (lapper.length && (i + 1) % 3 === 0) ut.push(lapper[Math.floor(i / 3) % lapper.length]);
+  });
+  return ut;
+}
+const KLASSE = { fakta: ["k-fakta", "BILFAKTA"], tips: ["k-tips", "TIPS"], oppslag: ["k-oppslag", "OPPSLAG"], status: ["k-status", "I DAG"],
+  regel: ["k-regel", "REGEL"], elbil: ["k-elbil", "ELBIL"], service: ["k-service", "SERVICE"], sesong: ["k-sesong", "SESONG"] };
+function nyhetHtml(x) {
+  if (x.k === "oppslag") return `<span class="nyhet oppslag"><b>OPPSLAG</b><span class="lapp"><span class="tx"></span><span class="av"></span></span></span>`;
+  return `<span class="nyhet"><b class="${KLASSE[x.k][0]}">${KLASSE[x.k][1]}</b><span class="tx"></span></span>`;
+}
+function fyllTekster(rot, liste) {
+  rot.querySelectorAll(".nyhet").forEach((el, i) => {
+    const x = liste[i % liste.length];
+    el.querySelector(".tx").textContent = x.t;
+    const av = el.querySelector(".av");
+    if (av) av.textContent = x.av || "";
+  });
+}
+function byggTicker(tving) {
+  const sig = aktiveOppslag().map((o) => o.id + o.text + tagg(o)).join("|") + "|" + notater.filter((n) => n.status !== "Behandlet").length + "|" + new Date().getDate();
+  if (!tving && sig === tickerSignatur && Date.now() - tickerBygget < 15 * 60000) return;
+  tickerSignatur = sig; tickerBygget = Date.now();
+  tickerElementer = tickerInnhold();
+  const bane = $("#bane");
+  if (rolig) { $("#ticker").classList.add("rolig"); visRoligNyhet(); return; }
+  bane.innerHTML = tickerElementer.map(nyhetHtml).join("").repeat(2);
+  fyllTekster(bane, tickerElementer);
+  const tegn = tickerElementer.reduce((sum, x) => sum + x.t.length + 12, 0);
+  bane.style.setProperty("--varighet", Math.max(40, Math.round(tegn / 9)) + "s");
+}
+function visRoligNyhet() {
+  if (!tickerElementer.length) return;
+  const x = tickerElementer[roligIndeks % tickerElementer.length];
+  $("#bane").innerHTML = nyhetHtml(x);
+  fyllTekster($("#bane"), [x]);
+  roligIndeks++;
+}
+if (rolig) setInterval(visRoligNyhet, 9000);
+
+// fjerner utløpte oppslag
+function ryddOppslag() {
+  const naa = Date.now();
+  oppslag.filter((o) => o.utloper && o.utloper <= naa).forEach(fjernOppslag);
+}
+function utlopFra(valg) {
+  const d = new Date();
+  const kveld = (x) => { x.setHours(23, 59, 0, 0); return +x; };
+  if (valg === "kveld") return kveld(d);
+  if (valg === "morgen") return kveld(leggTilDager(d, 1));
+  if (valg === "uke") return kveld(leggTilDager(d, (7 - d.getDay()) % 7));
+  if (valg === "dato") { const v = fraDato($("#o-dato").value); return v ? kveld(v) : kveld(d); }
+  return null;
+}
+
+function renderOppslagListe() {
+  const ul = $("#oppslag-liste");
+  if (!oppslag.length) { ul.innerHTML = `<li><small>Ingen oppslag ennå.</small></li>`; return; }
+  ul.innerHTML = oppslag.slice().sort((a, b) => b.created - a.created).map((o) =>
+    `<li data-id="${esc(o.id)}"><span></span><small>${esc(tagg(o))}${o.utloper ? " · til " + esc(visMs(o.utloper)) : " · til den slettes"}</small><button type="button" class="knapp liten fare-knapp" data-slett-oppslag="${esc(o.id)}">Slett</button></li>`).join("");
+  ul.querySelectorAll("li[data-id]").forEach((li) => { li.querySelector("span").textContent = (oppslag.find((o) => o.id === li.dataset.id) || {}).text || ""; });
+}
+
+// ---------------------------------------------------------------- redigering
+function fyllValg(sel, verdier) { sel.innerHTML = verdier.map((v) => Array.isArray(v) ? `<option value="${esc(v[0])}">${esc(v[1])}</option>` : `<option>${esc(v)}</option>`).join(""); }
+
+function maler() { return egneMaler || MALER.map(([title, category, body], i) => ({ id: "std" + i, title, category, body })); }
+function fyllMalValg() { $("#f-mal").innerHTML = `<option value="">Velg mal …</option>` + maler().map((m, i) => `<option value="${i}">${esc(m.title)}</option>`).join(""); }
+
+// kunderegister bygget fra tidligere notater
+function register() {
+  const reg = {}, tlf = {};
+  for (const n of notater.slice().sort((a, b) => (a.updated || 0) - (b.updated || 0))) {
+    const r = (n.regnr || "").toUpperCase().replace(/\s/g, ""), p = (n.phone || "").replace(/\D/g, "").slice(-8);
+    if (r) { const e = reg[r] || (reg[r] = { antall: 0, ids: [] }); e.antall++; e.ids.push(n.id); if (n.customer) e.customer = n.customer; if (n.phone) e.phone = n.phone; }
+    if (p.length === 8) { const e = tlf[p] || (tlf[p] = { antall: 0, ids: [] }); e.antall++; e.ids.push(n.id); if (n.customer) e.customer = n.customer; if (r) e.regnr = r; }
+  }
+  return { reg, tlf };
+}
+function fyllDatalister() {
+  const { reg } = register();
+  $("#dl-regnr").innerHTML = Object.entries(reg).slice(-300).map(([r, e]) => `<option value="${esc(r)}">${esc(e.customer || "")}</option>`).join("");
+  const kunder = [...new Set(notater.map((n) => n.customer).filter(Boolean))].slice(-300);
+  $("#dl-kunde").innerHTML = kunder.map((k) => `<option value="${esc(k)}"></option>`).join("");
+  const navn = new Set([lokaltNavn].concat(notater.flatMap((n) => [n.assigneeName, n.createdByName, n.updatedByName])).filter(Boolean));
+  $("#dl-navn").innerHTML = [...navn].map((k) => `<option value="${esc(k)}"></option>`).join("");
+}
+function sjekkRegister(kilde) {
+  const { reg, tlf } = register();
+  const egen = redigerer ? redigerer.id : null;
+  const hint = $("#f-hint");
+  let tekst = "";
+  if (kilde === "regnr") {
+    const r = $("#f-regnr").value.toUpperCase().replace(/\s/g, "");
+    const e = reg[r];
+    const ant = e ? e.ids.filter((id) => id !== egen).length : 0;
+    if (e && ant) {
+      const fylt = [];
+      if (!$("#f-kunde").value.trim() && e.customer) { $("#f-kunde").value = e.customer; fylt.push("kunde"); }
+      if (!$("#f-tlf").value.trim() && e.phone) { $("#f-tlf").value = e.phone; fylt.push("telefon"); }
+      tekst = `Kjent bil: ${ant} ${ant === 1 ? "tidligere sak" : "tidligere saker"}${e.customer ? " · " + e.customer : ""}${fylt.length ? ". Fylte inn " + fylt.join(" og ") + "." : ""}`;
+    }
+  } else {
+    const p = $("#f-tlf").value.replace(/\D/g, "").slice(-8);
+    const e = p.length === 8 ? tlf[p] : null;
+    const ant = e ? e.ids.filter((id) => id !== egen).length : 0;
+    if (e && ant) {
+      const fylt = [];
+      if (!$("#f-kunde").value.trim() && e.customer) { $("#f-kunde").value = e.customer; fylt.push("kunde"); }
+      if (!$("#f-regnr").value.trim() && e.regnr) { $("#f-regnr").value = e.regnr; fylt.push("regnr"); }
+      tekst = `Kjent kunde: ${ant} ${ant === 1 ? "tidligere sak" : "tidligere saker"}${e.customer ? " · " + e.customer : ""}${fylt.length ? ". Fylte inn " + fylt.join(" og ") + "." : ""}`;
+    }
+  }
+  if (tekst) { hint.textContent = tekst; hint.hidden = false; }
+  else if (kilde === "regnr" || !hint.textContent.startsWith("Kjent bil")) hint.hidden = true;
+}
+function fraRegister(regnr, telefon) {
+  const { reg, tlf } = register();
+  if (regnr && reg[regnr]) return reg[regnr];
+  const p = (telefon || "").replace(/\D/g, "").slice(-8);
+  return p.length === 8 ? tlf[p] || null : null;
+}
+
+function fyllAnsvar(n) {
+  const delt = modus === "delt" && !!meg.id;
+  $("#f-ansvar").hidden = !delt;
+  $("#f-ansvar-sok").hidden = !delt || !user || typeof user.search !== "function";
+  $("#f-ansvar-navn").hidden = delt;
+  if (delt) {
+    const ids = new Set(Object.keys(navnCache).filter((id) => navnCache[id]));
+    if (n && n.assignee) ids.add(n.assignee);
+    ids.delete(meg.id);
+    const valg = [["", "Ingen"], [meg.id, (meg.name || "Meg") + " (meg)"]]
+      .concat([...ids].map((id) => [id, navnCache[id] || "Kollega"]).sort((a, b) => a[1].localeCompare(b[1], "nb")));
+    fyllValg($("#f-ansvar"), valg);
+    $("#f-ansvar").value = (n && n.assignee) || "";
+  } else {
+    $("#f-ansvar-navn").value = (n && n.assigneeName) || "";
+  }
+}
+async function sokKollega() {
+  const q = prompt("Søk etter kollega (navn):");
+  if (!q || !user) return;
+  let treff = [];
+  try { treff = await user.search(q); } catch (e) {}
+  if (!treff.length) { toast("Fant ingen med det navnet."); return; }
+  treff.forEach((p) => {
+    navnCache[p.id] = p.name;
+    if (![...$("#f-ansvar").options].some((o) => o.value === p.id)) $("#f-ansvar").add(new Option(p.name, p.id));
+  });
+  $("#f-ansvar").value = treff[0].id;
+  if (treff.length > 1) toast(`Valgte ${treff[0].name}. Flere treff ligger i listen.`);
+}
+
+function aapneRedigering(n, forvalgtDato, kilde) {
+  redigerer = n || null;
+  const x = n || (kilde ? kopiAv(kilde) : {});
+  fyllValg($("#f-mappe"), alleMappeValg());
+  fyllMalValg();
+  fyllDatalister();
+  fyllAnsvar(x);
+  $("#f-hint").hidden = true;
+  $("#r-tittel").textContent = n ? "Rediger notat" : (kilde ? "Nytt notat (kopi)" : "Nytt notat");
+  $("#mal-felt").hidden = !!n;
+  $("#f-mal").value = "";
+  $("#f-mappe").value = n || kilde ? mappeFor(x) : (aktivMappe === "alle" ? FELLES : aktivMappe);
+  $("#f-tittel").value = x.title || "";
+  $("#f-kunde").value = x.customer || "";
+  $("#f-tlf").value = x.phone || "";
+  $("#f-regnr").value = x.regnr || "";
+  $("#f-kat").value = x.category || KATEGORIER[0];
+  $("#f-pri").value = x.priority || "Normal";
+  $("#f-status").value = kilde ? "Ny" : (x.status || "Ny");
+  $("#f-notat").value = x.body || "";
+  $("#f-gj").value = x.repeat || "none";
+  const omEnTime = new Date(Date.now() + 3600000);
+  $("#f-dato").value = x.date || isoDato(new Date());
+  $("#f-tid").value = x.time || `${pad(omEnTime.getHours())}:00`;
+  document.querySelector(`input[name="f-modus"][value="${x.alertMode === "blink" ? "blink" : "popup"}"]`).checked = true;
+  document.querySelector(`input[name="f-hvem"][value="${["meg", "ansvarlig"].includes(x.notify) ? x.notify : "alle"}"]`).checked = true;
+  if (!n && forvalgtDato) { $("#f-dato").value = forvalgtDato; $("#f-tid").value = "09:00"; $("#f-gj").value = "once"; }
+  oppdaterHvem();
+  if ($("#varsler").open) $("#varsler").close();
+  $("#rediger").showModal();
+  $("#f-tittel").focus();
+}
+function oppdaterHvem() { $("#hvem-rad").hidden = modus !== "delt" || $("#f-mappe").value === PRIVAT; }
+
+function hurtig(valg) {
+  let d;
+  if (valg === "mandag") {
+    d = new Date();
+    let add = (1 - d.getDay() + 7) % 7;
+    if (add === 0) add = 7;
+    d = leggTilDager(d, add); d.setHours(8, 0, 0, 0);
+  } else if (valg === "imorgen") {
+    d = leggTilDager(new Date(), 1); d.setHours(8, 0, 0, 0);
+  } else {
+    d = new Date(Date.now() + (+valg) * 60000);
+  }
+  $("#f-dato").value = isoDato(d);
+  $("#f-tid").value = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  if ($("#f-gj").value === "none") $("#f-gj").value = "once";
+}
+
+function lagreSkjema(e) {
+  e.preventDefault();
+  const tittel = $("#f-tittel").value.trim();
+  if (!tittel) { $("#f-tittel").focus(); return; }
+  const gj = $("#f-gj").value;
+  let dato = $("#f-dato").value, tid = $("#f-tid").value;
+  if (gj !== "none" && (!fraDato(dato) || !/^\d{1,2}:\d{2}$/.test(tid))) { toast("Fyll inn dato og klokkeslett for påminnelsen."); return; }
+  if (!fraDato(dato)) dato = isoDato(new Date());
+  if (!tid) tid = "08:00";
+  const naa = new Date();
+  const neste = nesteTid({ repeat: gj, date: dato, time: tid }, naa);
+  if (gj === "once" && neste && neste < naa && !confirm("Tidspunktet har allerede passert.\nVil du få varselet med en gang?")) return;
+
+  const ny = !redigerer;
+  const forrigeMappe = ny ? undefined : mappeFor(redigerer);
+  const forKopi = ny ? null : kopiAv(redigerer);
+  const n = ny ? { id: nyId(), created: iso(naa), log: [] } : kopiAv(redigerer);
+  const delt = modus === "delt" && !!meg.id;
+  const nyAnsvar = delt ? ($("#f-ansvar").value || null) : null;
+  const nyAnsvarNavn = delt ? null : ($("#f-ansvar-navn").value.trim() || null);
+  const ansvarEndret = (n.assignee || null) !== nyAnsvar || (n.assigneeName || null) !== nyAnsvarNavn;
+  if (ny) { const f = forfatter(); n.createdBy = f.by || null; n.createdByName = f.byName || null; }
+  const nyMappe = $("#f-mappe").value;
+  Object.assign(n, {
+    folder: nyMappe, title: tittel, customer: $("#f-kunde").value.trim(), phone: $("#f-tlf").value.trim(),
+    regnr: $("#f-regnr").value.trim().toUpperCase(), category: $("#f-kat").value, priority: $("#f-pri").value,
+    body: $("#f-notat").value.trim(), repeat: gj, date: dato, time: tid,
+    alertMode: document.querySelector('input[name="f-modus"]:checked').value,
+    notify: document.querySelector('input[name="f-hvem"]:checked').value,
+    nextDue: neste ? iso(neste) : null, alerting: false,
+    assignee: nyAnsvar, assigneeName: nyAnsvarNavn
+  });
+  if (ansvarEndret && (nyAnsvar || nyAnsvarNavn)) logg(n, "Ansvarlig: /" + ansvarNavn(n));
+  else if (ansvarEndret && !ny) logg(n, "Ansvarlig fjernet");
+  const status = $("#f-status").value;
+  if (status === "Behandlet" && n.status !== "Behandlet") n.ferdigAt = Date.now();
+  if (status !== "Behandlet") n.ferdigAt = null;
+  if (ny) { n.status = status; logg(n, "Opprettet i " + mappeNavn(nyMappe)); }
+  else {
+    logg(n, "Redigert");
+    if (forrigeMappe !== nyMappe) logg(n, `Flyttet: ${mappeNavn(forrigeMappe)} → ${mappeNavn(nyMappe)}`);
+    if (n.status !== status) { logg(n, `Status: ${visStatus(n.status)} → ${visStatus(status)}`); n.status = status; }
+  }
+  n.snart = false;
+  if (n.status === "Ny" && n.nextDue && !innenforHorisont(n)) {
+    logg(n, `Lagt i Lengre frem i tid (mer enn ${HORISONT} virkedager til påminnelsen)`);
+    n.status = "Planlagt";
+  }
+  valgtId = n.id;
+  $("#rediger").close();
+  lagre(n, forrigeMappe);
+  if (forKopi) visAngre("Endringene er lagret.", () => gjenopprett(forKopi, "redigering"));
+  else visAngre("Notatet er lagret.", () => { const x = finn(n.id); if (x) fjern(x); toast("Angret."); });
+  setTimeout(sjekk, 300);
+}
+
+// ---------------------------------------------------------------- hurtignotat
+const UKEDAGER_FULL = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
+const KAT_ORD = [["Lånebil", /lånebil|leiebil/], ["EU-kontroll", /eu-?kontroll|pkk/], ["Dekkskift / dekkhotell", /dekk/], ["Reklamasjon", /reklamasjon|garanti/],
+  ["Delbestilling", /(^|\s)(del|deler|delen|delbestilling|bestill\w*)(\s|$)/], ["Henting / levering", /hent|levere|levering/], ["Service", /service/], ["Ring kunde", /ring|kontakt/]];
+function tolkHurtig(tekst) {
+  let t = " " + tekst.trim() + " ";
+  const ut = {};
+  const ta = (m) => { t = t.replace(m, " "); };
+  const naa = new Date(), idag = new Date(naa.getFullYear(), naa.getMonth(), naa.getDate());
+  let m = t.match(/(?:\+47\s?)?(?<![\d])((?:\d\s?){7}\d)(?![\d])/);
+  if (m && m[1].replace(/\s/g, "").length === 8) { ut.phone = m[1].replace(/\s/g, ""); ta(m[0]); }
+  m = t.match(/(?<![\p{L}\d])([a-zæøå]{2})\s?(\d{4,5})(?![\d])/iu);
+  if (m) { ut.regnr = (m[1] + m[2]).toUpperCase(); ta(m[0]); }
+  if (/(^|\s)(haster|hast|asap)(\s|$)|!/i.test(t)) { ut.priority = "Haster"; t = t.replace(/(^|\s)(haster|hast|asap)(?=\s|$)/gi, " ").replace(/!+/g, " "); }
+  let dag = null, tid = null;
+  m = t.match(/(^|\s)om\s+(\d+)\s*(minutter|minutt|min|m|timer|time|t)(?=\s|$)/i);
+  if (m) { const d = new Date(Date.now() + (+m[2]) * (/^t/i.test(m[3]) ? 3600000 : 60000)); dag = new Date(d.getFullYear(), d.getMonth(), d.getDate()); tid = [d.getHours(), d.getMinutes()]; ta(m[0]); }
+  if (!tid) {
+    m = t.match(/(^|\s)(?:kl\.?\s*)?([01]?\d|2[0-3]):([0-5]\d)(?=\s|$|[,.])/i) || t.match(/(^|\s)kl\.?\s*([01]?\d|2[0-3])(?:[.:]([0-5]\d))?(?=\s|$|,)/i);
+    if (m) { tid = [+m[2], +(m[3] || 0)]; ta(m[0]); }
+  }
+  if (!dag) {
+    m = t.match(/(^|\s)(i\s?dag|i\s?morgen|overmorgen|(?:på\s+|neste\s+)?(søndag|mandag|tirsdag|onsdag|torsdag|fredag|lørdag))(?:\s+(?:kl\.?\s*)?([01]?\d|2[0-3])(?![\d:.]))?(?=\s|$|,)/i);
+    if (m) {
+      const w = m[2].toLowerCase().replace(/\s/g, "");
+      let d = idag;
+      if (w === "imorgen") d = leggTilDager(idag, 1);
+      else if (w === "overmorgen") d = leggTilDager(idag, 2);
+      else if (w !== "idag") { let add = (UKEDAGER_FULL.indexOf(m[3].toLowerCase()) - idag.getDay() + 7) % 7; if (add === 0) add = 7; d = leggTilDager(idag, add); }
+      dag = d;
+      if (m[4] !== undefined && !tid) tid = [+m[4], 0];
+      ta(m[0]);
+    }
+  }
+  if (!dag) {
+    m = t.match(/(^|\s)(\d{1,2})\.(\d{1,2})\.?(\d{2,4})?(?:\s+(?:kl\.?\s*)?([01]?\d|2[0-3])(?![\d:.]))?(?=\s|$|,)/);
+    if (m && +m[3] >= 1 && +m[3] <= 12 && +m[2] >= 1 && +m[2] <= 31) {
+      const y = m[4] ? (+m[4] < 100 ? 2000 + (+m[4]) : +m[4]) : naa.getFullYear();
+      let d = new Date(y, +m[3] - 1, +m[2]);
+      if (!m[4] && d < idag) d = new Date(y + 1, +m[3] - 1, +m[2]);
+      dag = d;
+      if (m[5] !== undefined && !tid) tid = [+m[5], 0];
+      ta(m[0]);
+    }
+  }
+  if (dag || tid) {
+    if (!tid) tid = [9, 0];
+    if (!dag) { dag = idag; if (new Date(dag.getFullYear(), dag.getMonth(), dag.getDate(), tid[0], tid[1]) <= naa) dag = leggTilDager(dag, 1); }
+    ut.date = isoDato(dag);
+    ut.time = pad(tid[0]) + ":" + pad(tid[1]);
+  }
+  const lav = tekst.toLowerCase();
+  ut.category = (KAT_ORD.find(([, re]) => re.test(lav)) || ["Annet"])[0];
+  let tittel = t.replace(/\s+/g, " ")
+    .replace(/(^|\s)(til|på|for|med|kl|om|hos|ca)(?=\s*[,.;]|\s*$)/gi, " ")   // løse småord der et regnr/tidspunkt ble fjernet
+    .replace(/\s+([,.;:])/g, "$1").replace(/([,.;:])(\s*[,.;:])+/g, "$1")
+    .replace(/^[\s,.\-–:;]+|[\s,.\-–:;]+$/g, "").trim();
+  if (!tittel || tittel.toLowerCase() === ut.category.toLowerCase()) tittel = ut.category === "Annet" ? (tittel || "Notat") : ut.category;
+  ut.title = tittel.charAt(0).toUpperCase() + tittel.slice(1);
+  const r = fraRegister(ut.regnr, ut.phone);
+  if (r) { if (!ut.phone && r.phone) ut.phone = r.phone; if (r.customer) ut.customer = r.customer; if (!ut.regnr && r.regnr) ut.regnr = r.regnr; ut.kjent = r.antall; }
+  return ut;
+}
+function visHurtigForslag() {
+  const v = $("#hurtig").value.trim();
+  const el = $("#hurtig-forslag");
+  if (!v) { el.textContent = ""; return; }
+  const u = tolkHurtig(v);
+  const deler = [`<b>${esc(u.title)}</b>`];
+  if (u.regnr) deler.push(esc(formatRegnr(u.regnr)));
+  if (u.customer) deler.push(esc(u.customer) + (u.kjent ? " (kjent kunde)" : ""));
+  if (u.phone) deler.push(esc(u.phone));
+  deler.push(u.date ? esc(visTid(u.date + "T" + u.time)) : "uten påminnelse");
+  deler.push(esc(u.category));
+  if (u.priority) deler.push(`<span style="color:var(--rod)">Haster</span>`);
+  el.innerHTML = "Lages som: " + deler.join("  ·  ");
+}
+function lagHurtignotat(aapneSkjema) {
+  const v = $("#hurtig").value.trim();
+  if (!v) return;
+  const u = tolkHurtig(v);
+  const naa = new Date();
+  const mappe = aktivMappe === "alle" ? FELLES : aktivMappe;
+  const n = { id: nyId(), created: iso(naa), log: [], folder: mappe, title: u.title, customer: u.customer || "", phone: u.phone || "",
+    regnr: u.regnr || "", category: u.category, priority: u.priority || "Normal", body: "", repeat: u.date ? "once" : "none",
+    date: u.date || isoDato(naa), time: u.time || "09:00", alertMode: "popup", notify: "alle", status: "Ny", alerting: false };
+  n.nextDue = u.date ? u.date + "T" + u.time : null;
+  if (aapneSkjema) { $("#hurtig").value = ""; visHurtigForslag(); aapneRedigering(null, null, n); return; }
+  const f = forfatter(); n.createdBy = f.by || null; n.createdByName = f.byName || null;
+  logg(n, "Opprettet med hurtignotat i " + mappeNavn(mappe));
+  if (n.nextDue && !innenforHorisont(n)) { n.status = "Planlagt"; logg(n, `Lagt i Lengre frem i tid (mer enn ${HORISONT} virkedager til påminnelsen)`); }
+  valgtId = n.id;
+  lagre(n);
+  $("#hurtig").value = "";
+  visHurtigForslag();
+  visAngre("Hurtignotat lagret.", () => { const x = finn(n.id); if (x) fjern(x); toast("Angret."); });
+  setTimeout(sjekk, 300);
+}
+
+// ---------------------------------------------------------------- popup-lister
+const KORT = {
+  ny: ["Nye saker", (n) => n.status === "Ny", "Ny"],
+  under: ["Under behandling", (n) => n.status === "Under behandling", "Under behandling"],
+  idag: ["Påminnelser i dag", (n) => { const d = fraIso(n.nextDue); return !!d && sammeDag(d, new Date()); }, "Forfaller i dag"],
+  haster: ["Haster", (n) => n.priority === "Haster" && n.status !== "Planlagt", "Haster"],
+  senere: ["Lengre frem i tid", (n) => n.status === "Planlagt", "Lengre frem i tid"],
+};
+function kortRad(n) {
+  const c = n.priority === "Haster" && n.status !== "Planlagt" ? "var(--rod)" : STATUS_C[n.status];
+  const meta = [n.customer, visStatus(n.status), ansvarNavn(n) ? "→ /" + ansvarNavn(n) : ""].filter(Boolean);
+  if (n.status === "Planlagt" && fraIso(n.nextDue)) { const a = aktiveresDato(fraIso(n.nextDue)); meta.push(`aktiveres ${UKEDAG[a.getDay()]} ${a.getDate()}.${a.getMonth() + 1}.`); }
+  return `<button type="button" class="kort-rad" style="--c:${c}" data-id="${esc(n.id)}">
+    <span class="kr-tid">${esc(visTid(n.nextDue))}</span><span class="kr-skilt">${skilt(n.regnr, "liten")}</span>
+    <span class="kr-t">${esc(n.title)}${n.snart && n.status === "Under behandling" ? KAL_IKON : ""}</span><span class="kr-m">${esc(meta.join("  ·  "))}</span></button>`;
+}
+function popListe(liste) { return liste.length ? `<div class="pop-liste">${liste.map(kortRad).join("")}</div>` : `<div class="pop-tom">Ingen saker her.</div>`; }
+function etterTid(a, b) { return (a.nextDue || "9999").localeCompare(b.nextDue || "9999"); }
+function visKortPopup(type) {
+  const [tittel, pred, filter] = KORT[type];
+  const liste = notater.filter((n) => n.status !== "Behandlet" && iMappe(n, aktivMappe) && pred(n)).sort(etterTid);
+  $("#pop-tittel").textContent = `${tittel} (${liste.length})${aktivMappe !== "alle" ? " – " + mappeNavn(aktivMappe) : ""}`;
+  $("#pop-innhold").innerHTML = popListe(liste);
+  $("#pop-fot").innerHTML = `<button type="button" class="knapp" data-vis-filter="${esc(filter)}">Vis i listen</button><button type="button" class="knapp gul" data-lukk-pop autofocus>Lukk</button>`;
+  $("#pop").showModal();
+}
+let dagVist = false;
+function kanskjeVisDag() {
+  if (SKY && modus !== "delt") { setTimeout(kanskjeVisDag, 3000); return; }
+  if (dagVist || !lsLes("verkstedpaaminner.visDag", true) || lsLes("verkstedpaaminner.dagDato", "") === isoDato(new Date())) return;
+  if (document.querySelector("dialog[open]")) { setTimeout(kanskjeVisDag, 5000); return; }
+  dagVist = true;
+  lsSkriv("verkstedpaaminner.dagDato", isoDato(new Date()));
+  visDag(false);
+}
+function visDag(tvunget) {
+  const aktive = notater.filter((n) => n.status !== "Behandlet");
+  const idag = aktive.filter(KORT.idag[1]).sort(etterTid);
+  const venter = sortert(mineVarsler());
+  const haster = aktive.filter((n) => KORT.haster[1](n) && !idag.includes(n)).sort(etterTid);
+  const snart = aktive.filter((n) => n.snart && n.status === "Under behandling" && !idag.includes(n)).sort(etterTid);
+  const mine = aktive.filter((n) => erMin(n) && !idag.includes(n) && !haster.includes(n)).sort(etterTid);
+  if (!tvunget && !idag.length && !venter.length && !haster.length && !snart.length) return;
+  const t = new Date().getHours();
+  const hilsen = t < 10 ? "God morgen" : t < 17 ? "God dag" : "God kveld";
+  const navn = ((modus === "delt" ? meg.name : lokaltNavn) || "").split(" ")[0];
+  $("#pop-tittel").textContent = `${hilsen}${navn ? ", " + navn : ""}! Dette skjer i dag`;
+  const seksjon = (tittel, liste) => liste.length ? `<div class="pop-seksjon">${esc(tittel)} (${liste.length})</div>${popListe(liste)}` : "";
+  const html = seksjon("Venter på svar nå", venter) + seksjon("Påminnelser i dag", idag) + seksjon("Haster", haster)
+    + seksjon(`Nærmer seg (${HORISONT} virkedager eller mindre)`, snart) + seksjon("Mine saker", mine);
+  $("#pop-innhold").innerHTML = html || `<div class="pop-tom">Ingen påminnelser eller hastesaker i dag. Rolig dag i mottaket!</div>`;
+  $("#pop-fot").innerHTML = `<label style="margin-right:auto;font-size:13px;color:var(--dempet);display:flex;gap:6px;align-items:center"><input type="checkbox" id="pop-ikke-vis"${lsLes("verkstedpaaminner.visDag", true) ? "" : " checked"}> Ikke vis automatisk</label><button type="button" class="knapp gul" data-lukk-pop autofocus>Kom i gang</button>`;
+  if (!$("#pop").open) $("#pop").showModal();
+}
+
+// ---------------------------------------------------------------- hover-boble
+const kanHover = window.matchMedia && window.matchMedia("(hover: hover)").matches;
+let bobleEl = null, bobleTimer = null, musX = 0, musY = 0;
+function skjulBoble() { clearTimeout(bobleTimer); bobleEl = null; $("#boble").hidden = true; }
+function visBoble(el) {
+  const n = finn(el.dataset.id);
+  if (!n) return;
+  const b = $("#boble");
+  const meta = [n.regnr ? formatRegnr(n.regnr) : "", n.customer, n.phone].filter(Boolean).join("  ·  ");
+  const sisteK = (n.comments || []).slice(-1)[0];
+  b.innerHTML = `<b></b><div class="bm"></div>${n.body ? `<div class="bt"></div>` : ""}${sisteK ? `<div class="bk"></div>` : ""}`;
+  b.querySelector("b").textContent = n.title;
+  b.querySelector(".bm").textContent = [meta, visStatus(n.status), ansvarNavn(n) ? "→ /" + ansvarNavn(n) : ""].filter(Boolean).join("  ·  ");
+  if (n.body) b.querySelector(".bt").textContent = n.body.length > 320 ? n.body.slice(0, 320) + " …" : n.body;
+  if (sisteK) b.querySelector(".bk").textContent = `💬 ${tagg(sisteK) ? tagg(sisteK) + ": " : ""}${sisteK.txt}`;
+  b.hidden = false;
+  plasserBoble();
+}
+function plasserBoble() {
+  const b = $("#boble");
+  if (b.hidden) return;
+  const w = b.offsetWidth, h = b.offsetHeight;
+  let x = musX + 16, y = musY + 18;
+  if (x + w > innerWidth - 8) x = Math.max(8, musX - w - 12);
+  if (y + h > innerHeight - 8) y = Math.max(8, musY - h - 12);
+  b.style.left = x + "px"; b.style.top = y + "px";
+}
+
+// ---------------------------------------------------------------- maler og tema
+function lagreMaler(liste) {
+  egneMaler = liste;
+  if (modus === "delt" && db && !kunLesing) db.doc("system/maler").set({ liste: liste ? kopiAv(liste) : null }).catch((e) => dbFeil(e));
+  else lsSkriv("verkstedpaaminner.maler", liste);
+  renderMalListe();
+}
+let malRedigeres = null;
+function renderMalListe() {
+  const ul = $("#mal-liste");
+  if (!ul) return;
+  ul.innerHTML = maler().map((m) => `<li data-id="${esc(m.id)}"><span><b></b> <small></small></span>
+    <button type="button" class="knapp liten" data-mal-rediger="${esc(m.id)}">Endre</button>
+    <button type="button" class="knapp liten fare-knapp" data-mal-slett="${esc(m.id)}">Slett</button></li>`).join("") || `<li><small>Ingen maler.</small></li>`;
+  ul.querySelectorAll("li[data-id]").forEach((li) => {
+    const m = maler().find((x) => x.id === li.dataset.id);
+    li.querySelector("b").textContent = m.title;
+    li.querySelector("small").textContent = m.category;
+  });
+  $("#mal-standard").hidden = !egneMaler;
+}
+function aapneMalSkjema(m) {
+  malRedigeres = m || null;
+  $("#ml-tittel").value = m ? m.title : "";
+  $("#ml-kat").value = m ? m.category : KATEGORIER[0];
+  $("#ml-tekst").value = m ? m.body : "";
+  $("#mal-skjema").hidden = false;
+  $("#ml-tittel").focus();
+}
+const TEMA = [["auto", "Tema: Auto"], ["light", "Tema: Lys"], ["dark", "Tema: Mørk"]];
+function settTema(t) {
+  if (t === "auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = t;
+  $("#tema-knapp").textContent = (TEMA.find((x) => x[0] === t) || TEMA[0])[1];
+  lsSkriv("verkstedpaaminner.tema", t);
+}
+function settKompakt(paa) {
+  document.body.classList.toggle("kompakt", paa);
+  $("#kompakt-knapp").setAttribute("aria-pressed", String(paa));
+  $("#kompakt-knapp").classList.toggle("gul", paa);
+  lsSkriv("verkstedpaaminner.kompakt", paa);
+}
+
+// ---------------------------------------------------------------- hendelser
+function handlingPaa(n, knapp) {
+  if (!n || !knapp) return;
+  if (knapp.dataset.status) { const st = knapp.dataset.status; medAngre(n, `Status satt til ${visStatus(st)}.`, () => settStatus(n, st)); }
+  else if (knapp.dataset.utsett) { const u = knapp.dataset.utsett; medAngre(n, "Påminnelsen er utsatt.", () => utsett(n, +u || 0, u === "imorgen")); }
+  else if (knapp.dataset.handling === "rediger") aapneRedigering(n);
+  else if (knapp.dataset.handling === "dupliser") aapneRedigering(null, null, n);
+  else if (knapp.dataset.handling === "vis-bil") { $("#sok").value = n.regnr; $("#filter").value = "Alle"; visning = "liste"; renderListe(); }
+  else if (knapp.dataset.handling === "slett") { if (knapp.getBoundingClientRect) sporSlettVed(n.id, knapp); else slett(n); }
+  else if (knapp.dataset.handling === "kopier-tlf") kopier(n.phone, "Telefonnummer");
+  else if (knapp.dataset.handling === "kopier-reg") kopier(n.regnr, "Regnr");
+}
+
+let mappeRedigeres = null;
+function aapneMappe(m) {
+  mappeRedigeres = m || null;
+  $("#mappe-dlg-tittel").textContent = m ? "Endre navn på mappe" : "Ny mappe";
+  $("#m-navn").value = m ? m.name : "";
+  $("#mappe-dlg").showModal();
+  $("#m-navn").focus();
+}
+
+function aapneInnstillinger() {
+  if (SKY && window.SKY) window.SKY.visInnstillinger();
+  $("#i-dag").checked = lsLes("verkstedpaaminner.visDag", true);
+  $("#mal-skjema").hidden = true;
+  renderMalListe();
+  $("#navn-blokk").hidden = modus === "delt" && !!meg.id;
+  $("#i-navn").value = lokaltNavn;
+  $("#wipe-blokk").hidden = !kanWipe();
+  $("#wipe-merknad").textContent = modus === "delt"
+    ? (SKY ? "Bare administratorer ser denne knappen. Private" : "Bare du som eier ser denne knappen. Private")
+      + " notater hos kollegaer slettes automatisk så snart appen er åpen hos dem – også om de er pålogget nå."
+    : "Denne utgaven er ikke koblet til andre PC-er, så dette sletter bare dataene i denne nettleseren.";
+  $("#wipe-bekreft").value = "";
+  $("#wipe-knapp").disabled = true;
+  $("#innst-dlg").showModal();
+}
+
+function oppsett() {
+  fyllValg($("#f-kat"), KATEGORIER);
+  fyllValg($("#f-pri"), PRIORITETER);
+  fyllValg($("#f-status"), STATUS_VALG);
+  fyllValg($("#f-gj"), GJ);
+  fyllValg($("#ml-kat"), KATEGORIER);
+
+  $("#ny-knapp").addEventListener("click", () => aapneRedigering(null));
+  $("#sok").addEventListener("input", renderListe);
+  $("#filter").addEventListener("change", renderListe);
+  $("#innst-knapp").addEventListener("click", aapneInnstillinger);
+  $("#rydd-knapp").addEventListener("click", ryddOpp);
+  $("#wipe-bekreft").addEventListener("input", (e) => { $("#wipe-knapp").disabled = e.target.value.trim().toUpperCase() !== "SLETT"; });
+  $("#wipe-knapp").addEventListener("click", wipe);
+  $("#i-navn-lagre").addEventListener("click", () => {
+    lokaltNavn = $("#i-navn").value.trim();
+    lsSkriv(LS.navn, lokaltNavn);
+    toast(lokaltNavn ? `Endringer merkes nå med /${lokaltNavn}.` : "Navn fjernet.");
+    render();
+  });
+  $("#bruker").addEventListener("click", (e) => { if (e.target.id === "sett-navn") aapneInnstillinger(); });
+  document.querySelectorAll("[data-lukk]").forEach((b) => b.addEventListener("click", () => b.closest("dialog").close()));
+
+  // mapper
+  $("#mappeliste").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-mappe]");
+    if (!b) return;
+    aktivMappe = b.dataset.mappe;
+    render();
+  });
+  $("#ny-mappe").addEventListener("click", () => aapneMappe(null));
+  $("#mappe-rediger").addEventListener("click", () => aapneMappe(mapper.find((m) => m.id === aktivMappe)));
+  $("#mappe-slett").addEventListener("click", () => {
+    const m = mapper.find((x) => x.id === aktivMappe);
+    if (!m) return;
+    const i = notater.filter((n) => n.folder === m.id);
+    const tekst = i.length ? `Slette mappen «${m.name}»?\n\nDe ${i.length} notatene i mappen flyttes til Felles.` : `Slette mappen «${m.name}»?`;
+    if (!confirm(tekst)) return;
+    i.forEach((n) => { logg(n, `Flyttet: ${m.name} → Felles (mappen ble slettet)`); n.folder = FELLES; lagre(n, m.id); });
+    fjernMappe(m);
+  });
+  $("#mappe-skjema").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const navn = $("#m-navn").value.trim();
+    if (!navn) return;
+    if (mapper.some((m) => m.name.toLowerCase() === navn.toLowerCase() && m !== mappeRedigeres) || /^(felles|mine( \(privat\))?|alle mapper)$/i.test(navn)) {
+      toast("Det finnes allerede en mappe med det navnet."); return;
+    }
+    if (mappeRedigeres) lagreMappe(Object.assign(kopiAv(mappeRedigeres), { name: navn }));
+    else {
+      const m = Object.assign({ id: nyId(), name: navn, created: Date.now() }, forfatter());
+      lagreMappe(m);
+      aktivMappe = m.id;
+      render();
+    }
+    $("#mappe-dlg").close();
+  });
+
+  // visning og kalender
+  visning = lsLes("verkstedpaaminner.visning", "liste");
+  document.querySelectorAll("[data-vis]").forEach((b) => b.addEventListener("click", () => {
+    visning = b.dataset.vis;
+    lsSkriv("verkstedpaaminner.visning", visning);
+    renderListe();
+  }));
+  $("#kalender").addEventListener("click", (e) => {
+    const nav = e.target.closest("[data-kal]");
+    if (nav) {
+      const steg = +nav.dataset.kal;
+      if (steg === 0) kalDato = new Date();
+      else if (visning === "uke") kalDato = leggTilDager(kalDato, 7 * steg);
+      else kalDato = new Date(kalDato.getFullYear(), kalDato.getMonth() + steg, 1);
+      renderListe();
+      return;
+    }
+    const gaa = e.target.closest("[data-gaa-til]");
+    if (gaa) { kalDato = fraDato(gaa.dataset.gaaTil); visning = "uke"; lsSkriv("verkstedpaaminner.visning", visning); renderListe(); return; }
+    const h = e.target.closest(".hendelse");
+    if (h) { valgtId = h.dataset.id; render(); return; }
+    const dag = e.target.closest("[data-dato]");
+    if (dag) aapneRedigering(null, dag.dataset.dato);
+  });
+  // høyreklikk i listen og kalenderen
+  document.addEventListener("contextmenu", (e) => {
+    const el = e.target.closest("#rader tr[data-id], #kalender .hendelse");
+    if (!el) return;
+    e.preventDefault();
+    valgtId = el.dataset.id;
+    render();
+    visMeny(valgtId, e.clientX, e.clientY);
+  });
+  $("#hoyremeny").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    const n = finn($("#hoyremeny").dataset.id);
+    const r = b.getBoundingClientRect();
+    lukkMeny();
+    if (b.dataset.handling === "slett") { if (n) sporSlett(n.id, r.right, r.top - 6); return; }
+    handlingPaa(n, { dataset: b.dataset });
+  });
+  $("#hoyremeny").addEventListener("keydown", (e) => {
+    const knapper = [...$("#hoyremeny").querySelectorAll("button")];
+    const i = knapper.indexOf(document.activeElement);
+    if (e.key === "ArrowDown") { e.preventDefault(); knapper[(i + 1) % knapper.length].focus(); }
+    if (e.key === "ArrowUp") { e.preventDefault(); knapper[(i - 1 + knapper.length) % knapper.length].focus(); }
+  });
+  $("#bekreft-ja").addEventListener("click", () => { const n = finn(slettId); lukkBekreft(); if (n) slett(n); });
+  $("#bekreft-nei").addEventListener("click", lukkBekreft);
+  document.addEventListener("mousedown", (e) => {
+    if (!$("#hoyremeny").hidden && !e.target.closest("#hoyremeny")) lukkMeny();
+    if (!$("#bekreft").hidden && !e.target.closest("#bekreft") && !e.target.closest("[data-slett]")) lukkBekreft();
+  }, true);
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { lukkMeny(); lukkBekreft(); } }, true);
+  ["scroll", "resize", "blur"].forEach((ev) => window.addEventListener(ev, (e) => { if (e.target === window || e.target === document) { lukkMeny(); lukkBekreft(); } }));
+
+  $("#kalender").addEventListener("dblclick", (e) => {
+    const h = e.target.closest(".hendelse");
+    if (h) aapneRedigering(finn(h.dataset.id));
+  });
+
+  // liste
+  planlagtAapen = lsLes("verkstedpaaminner.planlagtAapen", false);
+  $("#rader").addEventListener("click", (e) => {
+    const sb = e.target.closest("[data-slett]");
+    if (sb) { e.stopPropagation(); sporSlettVed(sb.dataset.slett, sb); return; }
+    if (e.target.closest("tr.gruppe")) { planlagtAapen = !planlagtAapen; lsSkriv("verkstedpaaminner.planlagtAapen", planlagtAapen); renderListe(); return; }
+    const tr = e.target.closest("tr[data-id]");
+    if (tr) { valgtId = tr.dataset.id; render(); }
+  });
+  $("#rader").addEventListener("dblclick", (e) => {
+    const tr = e.target.closest("tr[data-id]");
+    if (tr) aapneRedigering(finn(tr.dataset.id));
+  });
+  $("#rader").addEventListener("keydown", (e) => {
+    if (e.target.closest("tr.gruppe") && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); planlagtAapen = !planlagtAapen; lsSkriv("verkstedpaaminner.planlagtAapen", planlagtAapen); renderListe(); return; }
+    const tr = e.target.closest("tr[data-id]");
+    if (!tr) return;
+    if (e.target.closest("[data-slett]")) return;
+    if (e.key === "Delete") { e.preventDefault(); sporSlettVed(tr.dataset.id, tr.querySelector(".soppel")); return; }
+    if (e.key === "ContextMenu" || (e.shiftKey && e.key === "F10")) { e.preventDefault(); const r = tr.getBoundingClientRect(); valgtId = tr.dataset.id; render(); visMeny(valgtId, r.left + 40, r.bottom); return; }
+    if (e.key === "Enter") aapneRedigering(finn(tr.dataset.id));
+    if (e.key === " ") { e.preventDefault(); valgtId = tr.dataset.id; render(); }
+  });
+  $("#detalj").addEventListener("click", (e) => handlingPaa(finn(valgtId), e.target.closest("button")));
+  $("#detalj").addEventListener("change", (e) => { if (e.target.id === "d-mappe") { const n = finn(valgtId), m = e.target.value; if (n) medAngre(n, `Flyttet til ${mappeNavn(m)}.`, () => flytt(n, m)); } });
+  $("#detalj").addEventListener("submit", (e) => {
+    if (e.target.id !== "k-skjema") return;
+    e.preventDefault();
+    const n = finn(valgtId), tekst = $("#k-tekst").value.trim();
+    if (!n || !tekst) return;
+    (n.comments = n.comments || []).push(Object.assign({ t: iso(new Date()), txt: tekst }, forfatter()));
+    $("#k-tekst").value = "";
+    lagre(n);
+    $("#k-tekst").focus();
+  });
+  $("#varsel-liste").addEventListener("click", (e) => {
+    const kort = e.target.closest(".varsel-kort");
+    if (kort) handlingPaa(finn(kort.dataset.id), e.target.closest("button"));
+  });
+  $("#varsler").addEventListener("cancel", (e) => e.preventDefault());
+
+  // skjema
+  $("#skjema").addEventListener("submit", lagreSkjema);
+  $("#avbryt").addEventListener("click", () => { $("#rediger").close(); render(); });
+  $("#f-mappe").addEventListener("change", oppdaterHvem);
+  $("#f-mal").addEventListener("change", () => {
+    const m = maler()[+$("#f-mal").value];
+    if (!$("#f-mal").value || !m) return;
+    $("#f-tittel").value = m.title;
+    $("#f-kat").value = m.category;
+    if (!$("#f-notat").value.trim()) $("#f-notat").value = m.body;
+  });
+  $("#som-mal").addEventListener("click", () => {
+    const t = $("#f-tittel").value.trim();
+    if (!t) { toast("Skriv en tittel først."); return; }
+    lagreMaler(maler().concat([{ id: nyId(), title: t, category: $("#f-kat").value, body: $("#f-notat").value.trim() }]));
+    fyllMalValg();
+    toast(`«${t}» er lagret som mal.`);
+  });
+  $("#f-regnr").addEventListener("change", () => sjekkRegister("regnr"));
+  $("#f-regnr").addEventListener("input", () => { if ($("#f-regnr").value.replace(/\s/g, "").length >= 6) sjekkRegister("regnr"); });
+  $("#f-tlf").addEventListener("input", () => { if ($("#f-tlf").value.replace(/\D/g, "").length >= 8) sjekkRegister("tlf"); });
+  $("#f-ansvar-sok").addEventListener("click", sokKollega);
+
+  // hurtignotat
+  $("#hurtig").addEventListener("input", visHurtigForslag);
+  $("#hurtig").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); lagHurtignotat(e.shiftKey); }
+    if (e.key === "Escape") { $("#hurtig").value = ""; visHurtigForslag(); }
+  });
+
+  // oversiktskort og popup
+  document.querySelectorAll("[data-kort]").forEach((b) => b.addEventListener("click", () => visKortPopup(b.dataset.kort)));
+  $("#pop").addEventListener("click", (e) => {
+    if (e.target === $("#pop")) { $("#pop").close(); return; }          // klikk utenfor lukker
+    if (e.target.closest("[data-lukk-pop]")) { $("#pop").close(); return; }
+    const f = e.target.closest("[data-vis-filter]");
+    if (f) { $("#filter").value = f.dataset.visFilter; visning = "liste"; if (f.dataset.visFilter === "Lengre frem i tid") planlagtAapen = true; $("#pop").close(); render(); return; }
+    const r = e.target.closest(".kort-rad");
+    if (r) {
+      const n = finn(r.dataset.id);
+      valgtId = r.dataset.id;
+      if (n && n.status === "Planlagt") planlagtAapen = true;
+      if (n && !synligeNotater(false).includes(n)) { $("#filter").value = "Alle"; $("#sok").value = ""; aktivMappe = "alle"; }
+      $("#pop").close();
+      render();
+      const tr = document.querySelector(`#rader tr[data-id="${CSS.escape(valgtId)}"]`);
+      if (tr) tr.scrollIntoView({ block: "nearest" });
+    }
+  });
+  $("#pop").addEventListener("change", (e) => { if (e.target.id === "pop-ikke-vis") lsSkriv("verkstedpaaminner.visDag", !e.target.checked); });
+  $("#i-dag").addEventListener("change", (e) => lsSkriv("verkstedpaaminner.visDag", e.target.checked));
+  $("#i-vis-dag").addEventListener("click", () => { $("#innst-dlg").close(); visDag(true); });
+
+  // maler i innstillinger
+  $("#ny-mal").addEventListener("click", () => aapneMalSkjema(null));
+  $("#ml-avbryt").addEventListener("click", () => { $("#mal-skjema").hidden = true; });
+  $("#ml-lagre").addEventListener("click", () => {
+    const t = $("#ml-tittel").value.trim();
+    if (!t) { $("#ml-tittel").focus(); return; }
+    const data = { title: t, category: $("#ml-kat").value, body: $("#ml-tekst").value.trim() };
+    const liste = maler().map((m) => m.id === (malRedigeres && malRedigeres.id) ? Object.assign({}, m, data) : m);
+    if (!malRedigeres) liste.push(Object.assign({ id: nyId() }, data));
+    lagreMaler(liste);
+    $("#mal-skjema").hidden = true;
+  });
+  $("#mal-liste").addEventListener("click", (e) => {
+    const r = e.target.dataset.malRediger, sl = e.target.dataset.malSlett;
+    if (r) aapneMalSkjema(maler().find((m) => m.id === r));
+    if (sl) { const m = maler().find((x) => x.id === sl); if (m && confirm(`Slette malen «${m.title}»?`)) lagreMaler(maler().filter((x) => x.id !== sl)); }
+  });
+  $("#mal-standard").addEventListener("click", () => { if (confirm("Erstatte malene med standardmalene?")) lagreMaler(null); });
+
+  // tema og kompakt
+  settTema(lsLes("verkstedpaaminner.tema", "auto"));
+  settKompakt(lsLes("verkstedpaaminner.kompakt", false));
+  $("#tema-knapp").addEventListener("click", () => {
+    const naa = lsLes("verkstedpaaminner.tema", "auto");
+    settTema(TEMA[(TEMA.findIndex((x) => x[0] === naa) + 1) % TEMA.length][0]);
+  });
+  $("#kompakt-knapp").addEventListener("click", () => settKompakt(!document.body.classList.contains("kompakt")));
+
+  // hover-boble
+  if (kanHover) {
+    document.addEventListener("mouseover", (e) => {
+      const el = e.target.closest("#rader tr[data-id], .hendelse, .kort-rad");
+      if (el === bobleEl) return;
+      skjulBoble();
+      if (!el) return;
+      bobleEl = el;
+      bobleTimer = setTimeout(() => visBoble(el), 450);
+    });
+    document.addEventListener("mousemove", (e) => { musX = e.clientX; musY = e.clientY; plasserBoble(); }, { passive: true });
+    ["scroll", "mousedown", "keydown"].forEach((ev) => document.addEventListener(ev, skjulBoble, { passive: true, capture: true }));
+  }
+  $("#f-regnr").addEventListener("input", (e) => { e.target.value = e.target.value.toUpperCase(); });
+  document.querySelectorAll("[data-hurtig]").forEach((b) => b.addEventListener("click", () => hurtig(b.dataset.hurtig)));
+
+  // oppslag
+  $("#oppslag-knapp").addEventListener("click", () => { renderOppslagListe(); $("#oppslag-dlg").showModal(); $("#o-tekst").focus(); });
+  $("#oppslag-skjema").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const t = $("#o-tekst").value.trim();
+    if (!t) return;
+    lagreOppslag(Object.assign({ id: nyId(), text: t, created: Date.now(), utloper: utlopFra($("#o-utlop").value) }, forfatter()));
+    $("#o-tekst").value = "";
+    renderOppslagListe();
+  });
+  $("#o-utlop").addEventListener("change", (e) => {
+    $("#o-dato-felt").hidden = e.target.value !== "dato";
+    if (e.target.value === "dato" && !$("#o-dato").value) $("#o-dato").value = isoDato(leggTilDager(new Date(), 1));
+  });
+  $("#oppslag-liste").addEventListener("click", (e) => {
+    const id = e.target.dataset && e.target.dataset.slettOppslag;
+    const o = id && oppslag.find((x) => x.id === id);
+    if (o) { fjernOppslag(o); renderOppslagListe(); }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    const iFelt = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+    if (e.key === "/" && !iFelt && !document.querySelector("dialog[open]")) { e.preventDefault(); $("#sok").focus(); }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z" && !iFelt && angreFn) { e.preventDefault(); utforAngre(); }
+  });
+
+  const vk = $("#varsel-knapp");
+  if ("Notification" in window && Notification.permission === "default") {
+    vk.hidden = false;
+    vk.addEventListener("click", async () => {
+      let svar = "denied";
+      try { svar = await Notification.requestPermission(); } catch (e) {}
+      vk.hidden = true;
+      toast(svar === "granted" ? "Windows-varsler er slått på." : "Nettleseren tillot ikke varsler her. Påminnelsene vises fortsatt i siden.");
+    });
+  }
+}
+
+function tikk() {
+  const naa = new Date();
+  $("#tid").textContent = `${pad(naa.getHours())}:${pad(naa.getMinutes())}:${pad(naa.getSeconds())}`;
+  $("#dato").textContent = `${DAGER[naa.getDay()]} ${naa.getDate()}. ${MND[naa.getMonth()]}, uke ${uke(naa)}`;
+  if (naa.getSeconds() === 0) { ryddOppslag(); render(); byggTicker(false); }
+}
+
+oppsett();
+lokaltNavn = lsLes(LS.navn, "");
+egneMaler = lsLes("verkstedpaaminner.maler", null);
+delte = SKY ? [] : lsLes(LS.notater, []).filter((n) => n.folder !== PRIVAT);
+private_ = SKY ? [] : lsLes(LS.notater, []).filter((n) => n.folder === PRIVAT);
+mapper = SKY ? [] : lsLes(LS.mapper, []);
+oppslag = SKY ? [] : lsLes(LS.oppslag, []);
+if (SKY) { try { [LS.notater, LS.mapper, LS.oppslag].forEach((k) => localStorage.removeItem(k)); } catch (e) {} }
+slaaSammen();
+ryddOppslag();
+render();
+byggTicker(true);
+setTimeout(() => byggTicker(false), 4000);
+setTimeout(kanskjeVisDag, 2500);
+tikk();
+setInterval(tikk, 1000);
+setInterval(sjekk, 15000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) sjekk(); });
+sjekk();
+kobleTilDelt();
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+rules_version = '2';
+
+// Sikkerhetsregler for Verkstedpåminner.
+// Lim inn hele denne filen under Firestore Database → Regler, og trykk «Publiser».
+//
+// Roller (lagret i /brukere/{uid}.rolle):
+//   admin   – full tilgang, godkjenner brukere og kan slette alle kundedata
+//   bruker  – godkjent kollega, full tilgang til delte mapper og egen privat mappe
+//   venter  – har opprettet konto, men er ikke godkjent ennå (ingen tilgang til data)
+//   sperret – tilgangen er fjernet (ingen tilgang til data)
+// Den aller første som oppretter konto blir automatisk admin.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function innlogget() { return request.auth != null; }
+    function minRolle() { return get(/databases/$(database)/documents/brukere/$(request.auth.uid)).data.rolle; }
+    function medlem() { return innlogget() && minRolle() in ['bruker', 'admin']; }
+    function admin() { return innlogget() && minRolle() == 'admin'; }
+    function oppsettFinnes() { return exists(/databases/$(database)/documents/system/oppsett); }
+
+    // ---------- brukere og tilgang
+    match /brukere/{uid} {
+      allow read: if (innlogget() && request.auth.uid == uid) || medlem();
+
+      // ny konto: alltid «venter», bortsett fra den aller første som blir admin
+      allow create: if innlogget() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['navn', 'epost', 'rolle', 'opprettet'])
+        && request.resource.data.navn is string && request.resource.data.navn.size() <= 60
+        && (
+          request.resource.data.rolle == 'venter'
+          || (request.resource.data.rolle == 'admin'
+              && !oppsettFinnes()
+              && getAfter(/databases/$(database)/documents/system/oppsett).data.admin == uid)
+        );
+
+      // admin kan endre roller; brukeren selv kan bare endre navnet sitt
+      allow update: if admin()
+        || (innlogget() && request.auth.uid == uid
+            && request.resource.data.rolle == resource.data.rolle
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['navn']));
+      allow delete: if admin();
+    }
+
+    // ---------- system
+    match /system/oppsett {
+      allow read: if innlogget();
+      allow create: if innlogget() && !oppsettFinnes()
+        && request.resource.data.admin == request.auth.uid
+        && getAfter(/databases/$(database)/documents/brukere/$(request.auth.uid)).data.rolle == 'admin';
+      allow update, delete: if false;
+    }
+    match /system/maler {
+      allow read, write: if medlem();
+    }
+    match /system/wipe {
+      allow read: if medlem();
+      allow write: if admin();
+    }
+
+    // ---------- delte data
+    match /notater/{id} {
+      allow read, write: if medlem();
+    }
+    match /mapper/{id} {
+      allow read, write: if medlem();
+    }
+    match /oppslag/{id} {
+      allow read, write: if medlem();
+    }
+
+    // ---------- private mapper: bare eieren kan lese og skrive
+    match /data/users/{uid}/{id} {
+      allow read, write: if medlem() && request.auth.uid == uid;
+    }
+  }
+}

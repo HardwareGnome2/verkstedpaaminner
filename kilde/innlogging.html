@@ -1,0 +1,82 @@
+<style>
+#sky-login { position: fixed; inset: 0; z-index: 200; background: var(--bg); display: flex; align-items: center; justify-content: center; padding: 20px; overflow: auto; }
+#sky-login[hidden] { display: none; }
+.login-kort { background: var(--panel); width: min(420px, 100%); border-radius: 4px; box-shadow: 0 10px 40px rgb(0 0 0 / .18); overflow: hidden; }
+.login-kort .fare { height: 12px; }
+.login-innhold { padding: 22px 26px 26px; }
+.login-merke { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.login-merke h1 { font-family: var(--disp); font-size: 26px; margin: 0; line-height: 1.1; }
+.login-merke p { margin: 2px 0 0; color: var(--dempet); font-size: 14px; }
+.login-faner { display: flex; border-bottom: 1px solid var(--kant); margin-bottom: 12px; }
+.login-faner button { flex: 1; background: none; border: none; border-bottom: 3px solid transparent; padding: 8px; cursor: pointer; font-family: var(--disp); font-size: 16px; color: var(--dempet); }
+.login-faner button.aktiv { border-bottom-color: var(--gul); color: var(--tekst); font-weight: 600; }
+.login-skjema { display: flex; flex-direction: column; gap: 10px; }
+.login-skjema label { display: flex; flex-direction: column; gap: 3px; font-size: 13px; color: var(--dempet); }
+.login-skjema label input { font-size: 15px; color: var(--tekst); }
+.login-skjema .knapp.gul { padding: 9px; font-size: 15px; margin-top: 4px; }
+.login-eller { display: flex; align-items: center; gap: 10px; color: var(--dempet); font-size: 13px; margin: 14px 0 10px; }
+.login-eller::before, .login-eller::after { content: ""; flex: 1; height: 1px; background: var(--kant); }
+.login-google { width: 100%; padding: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+.login-feil { background: var(--rod-svak); color: var(--rod-svak-tekst); padding: 8px 10px; font-size: 14px; border-radius: 3px; }
+.login-info { background: var(--panel2); padding: 10px 12px; font-size: 14px; border-radius: 3px; }
+.login-lenke { background: none; border: none; color: var(--bla); cursor: pointer; padding: 0; font-size: 13px; text-decoration: underline; align-self: flex-start; }
+.login-fot { margin-top: 16px; font-size: 12px; color: var(--dempet); }
+.vent-boks { text-align: center; }
+.vent-boks h2 { font-family: var(--disp); font-size: 22px; margin: 6px 0 8px; }
+.vent-boks p { color: var(--dempet); margin: 0 0 16px; }
+.oppslag-liste li span.sky-rolle { flex: none; }
+.sky-rolle { font-size: 12px; padding: 1px 8px; border-radius: 10px; background: var(--panel2); color: var(--dempet); white-space: nowrap; }
+.sky-rolle.admin { background: var(--gul); color: #0f1519; }
+.sky-rolle.venter { background: var(--oransje); color: #fff; }
+.sky-rolle.sperret { background: var(--rod-svak); color: var(--rod-svak-tekst); }
+</style>
+<div id="sky-login" role="dialog" aria-modal="true" aria-labelledby="sky-login-tittel">
+  <div class="login-kort">
+    <div class="fare"></div>
+    <div class="login-innhold">
+      <div class="login-merke">
+        <svg width="56" height="44" viewBox="0 0 78 58" aria-hidden="true">
+          <path d="M14.4 31.4 A30 30 0 0 1 54 18.9" fill="none" stroke="var(--bla)" stroke-width="4" stroke-linecap="round" opacity=".55"/>
+          <path d="M54 18.9 A30 30 0 0 1 66.2 33.3" fill="none" stroke="var(--rod)" stroke-width="4" stroke-linecap="round"/>
+          <line x1="39" y1="46" x2="27" y2="25" stroke="var(--gul)" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="39" cy="46" r="4.5" fill="var(--gul)"/>
+        </svg>
+        <div><h1 id="sky-login-tittel">Verkstedpåminner</h1><p>Notater og påminnelser for kundemottaket</p></div>
+      </div>
+
+      <div id="sky-steg-laster" class="login-info">Kobler til …</div>
+
+      <div id="sky-steg-config" hidden>
+        <div class="login-feil">Appen er ikke koblet til Firebase ennå. Fyll inn <b>firebase-config.js</b> med verdiene fra Firebase-prosjektet ditt, og last opp filen sammen med index.html (se LES-MEG).</div>
+      </div>
+
+      <div id="sky-steg-login" hidden>
+        <div class="login-faner" role="tablist">
+          <button type="button" role="tab" class="aktiv" data-fane="inn">Logg inn</button>
+          <button type="button" role="tab" data-fane="ny">Opprett konto</button>
+        </div>
+        <form class="login-skjema" id="sky-skjema" novalidate>
+          <div class="login-feil" id="sky-feil" hidden></div>
+          <div class="login-info" id="sky-melding" hidden></div>
+          <label id="sky-navn-felt" hidden>Navn (vises som /navn på endringer)<input class="felt" id="sky-navn" autocomplete="name" maxlength="40"></label>
+          <label>E-post<input class="felt" id="sky-epost" type="email" autocomplete="username" required></label>
+          <label>Passord<input class="felt" id="sky-passord" type="password" autocomplete="current-password" required minlength="6"></label>
+          <button type="button" class="login-lenke" id="sky-glemt">Glemt passord?</button>
+          <button type="submit" class="knapp gul" id="sky-send">Logg inn</button>
+        </form>
+        <div class="login-eller">eller</div>
+        <button type="button" class="knapp login-google" id="sky-google">
+          <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>
+          Logg inn med Google
+        </button>
+        <div class="login-fot">Nye kontoer må godkjennes av en administrator før de får tilgang til notatene.</div>
+      </div>
+
+      <div id="sky-steg-vent" class="vent-boks" hidden>
+        <h2 id="sky-vent-tittel">Venter på godkjenning</h2>
+        <p id="sky-vent-tekst">Kontoen din er opprettet. En administrator må godkjenne den før du får tilgang. Siden åpner seg av seg selv når du er godkjent.</p>
+        <button type="button" class="knapp" id="sky-vent-ut">Logg ut</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,265 @@
+<script type="module">
+// ======================================================================
+// Firebase-kobling for Verkstedpåminner
+// Innlogging, godkjenning av brukere og en tynn adapter mellom appen og Firestore.
+// ======================================================================
+import { firebaseConfig } from "./firebase-config.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword,
+  sendPasswordResetEmail, signOut, GoogleAuthProvider, signInWithPopup, updateProfile
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {
+  getFirestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, writeBatch
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const $s = (q) => document.querySelector(q);
+const steg = (navn) => ["laster", "config", "login", "vent"].forEach((x) => { $s("#sky-steg-" + x).hidden = x !== navn; });
+const visLogin = (paa) => { $s("#sky-login").hidden = !paa; };
+
+if (!firebaseConfig || !firebaseConfig.apiKey || String(firebaseConfig.apiKey).includes("LIM_INN")) {
+  steg("config");
+  throw new Error("firebase-config.js er ikke fylt ut");
+}
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const fs = getFirestore(app);
+
+// ---------------------------------------------------------------- feilmeldinger
+function norsk(e) {
+  const k = (e && e.code) || "";
+  const tekster = {
+    "auth/invalid-credential": "Feil e-post eller passord.",
+    "auth/wrong-password": "Feil e-post eller passord.",
+    "auth/user-not-found": "Feil e-post eller passord.",
+    "auth/invalid-email": "E-postadressen ser ikke riktig ut.",
+    "auth/missing-password": "Skriv inn passordet.",
+    "auth/email-already-in-use": "Det finnes allerede en konto med denne e-posten. Velg «Logg inn».",
+    "auth/weak-password": "Passordet må ha minst 6 tegn.",
+    "auth/too-many-requests": "For mange forsøk. Vent litt og prøv igjen.",
+    "auth/network-request-failed": "Ingen kontakt med nettet. Sjekk tilkoblingen.",
+    "auth/operation-not-allowed": "Denne innloggingsmetoden er ikke slått på i Firebase (se LES-MEG, steg 2).",
+    "auth/unauthorized-domain": "Nettadressen er ikke godkjent i Firebase (se LES-MEG, steg 3).",
+    "auth/popup-blocked": "Nettleseren blokkerte innloggingsvinduet. Tillat popup-vinduer for denne siden.",
+    "permission-denied": "Ingen tilgang. Sjekk at sikkerhetsreglene er lagt inn (LES-MEG, steg 5).",
+  };
+  return tekster[k] || ("Noe gikk galt (" + (k || (e && e.message) || "ukjent feil") + ").");
+}
+function visFeil(e) { const f = $s("#sky-feil"); f.textContent = typeof e === "string" ? e : norsk(e); f.hidden = false; $s("#sky-melding").hidden = true; }
+function visMelding(t) { const m = $s("#sky-melding"); m.textContent = t; m.hidden = false; $s("#sky-feil").hidden = true; }
+
+// ---------------------------------------------------------------- innloggingsskjema
+let fane = "inn";
+let navnVedRegistrering = "";
+function settFane(f) {
+  fane = f;
+  document.querySelectorAll("[data-fane]").forEach((b) => b.classList.toggle("aktiv", b.dataset.fane === f));
+  $s("#sky-navn-felt").hidden = f !== "ny";
+  $s("#sky-glemt").hidden = f !== "inn";
+  $s("#sky-send").textContent = f === "ny" ? "Opprett konto" : "Logg inn";
+  $s("#sky-passord").autocomplete = f === "ny" ? "new-password" : "current-password";
+  $s("#sky-feil").hidden = true; $s("#sky-melding").hidden = true;
+}
+document.querySelectorAll("[data-fane]").forEach((b) => b.addEventListener("click", () => settFane(b.dataset.fane)));
+$s("#sky-skjema").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const epost = $s("#sky-epost").value.trim(), passord = $s("#sky-passord").value;
+  const knapp = $s("#sky-send");
+  knapp.disabled = true;
+  try {
+    if (fane === "ny") {
+      const navn = $s("#sky-navn").value.trim();
+      if (!navn) { visFeil("Skriv inn navnet ditt."); return; }
+      navnVedRegistrering = navn;
+      const cred = await createUserWithEmailAndPassword(auth, epost, passord);
+      await updateProfile(cred.user, { displayName: navn }).catch(() => {});
+    } else {
+      await signInWithEmailAndPassword(auth, epost, passord);
+    }
+  } catch (err) { visFeil(err); }
+  finally { knapp.disabled = false; }
+});
+$s("#sky-glemt").addEventListener("click", async () => {
+  const epost = $s("#sky-epost").value.trim();
+  if (!epost) { visFeil("Skriv inn e-postadressen din først, så sender vi en lenke for nytt passord."); return; }
+  try { await sendPasswordResetEmail(auth, epost); visMelding("Hvis det finnes en konto for " + epost + ", er det sendt en e-post med lenke for nytt passord."); }
+  catch (err) { visFeil(err); }
+});
+$s("#sky-google").addEventListener("click", async () => {
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+  catch (err) { if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request") visFeil(err); }
+});
+$s("#sky-vent-ut").addEventListener("click", () => signOut(auth).then(() => location.reload()));
+
+// ---------------------------------------------------------------- adapter mot Firestore (samme form som appen bruker)
+function dbFeil(e) {
+  const k = (e && e.code) || "";
+  const kode = k === "permission-denied" ? "not_granted" : k === "resource-exhausted" ? "quota_exceeded" : k === "invalid-argument" ? "invalid_argument" : "unavailable";
+  return { code: kode, message: (e && e.message) || kode };
+}
+function docRef(sti) {
+  const r = doc(fs, sti);
+  return {
+    set: (data) => setDoc(r, data).catch((e) => { throw dbFeil(e); }),
+    delete: () => deleteDoc(r).catch((e) => { throw dbFeil(e); }),
+    onSnapshot: (neste, feil) => onSnapshot(r, (d) => neste({ id: d.id, exists: d.exists(), data: () => d.data() }), (e) => feil && feil(dbFeil(e))),
+  };
+}
+const dbAdapter = {
+  doc: (sti) => docRef(sti),
+  collection: (sti) => ({
+    doc: (id) => docRef(sti + "/" + id),
+    onSnapshot: (neste, feil) => onSnapshot(collection(fs, sti),
+      (snap) => neste({ docs: snap.docs.map((d) => ({ id: d.id, exists: true, data: () => d.data() })), metadata: { fromCache: snap.metadata.fromCache } }),
+      (e) => feil && feil(dbFeil(e))),
+  }),
+};
+
+// ---------------------------------------------------------------- brukere
+let meg = null;           // { uid, navn, epost, rolle, foto }
+let brukere = {};         // uid -> data
+let brukereKlar;
+const brukereLastet = new Promise((r) => { brukereKlar = r; });
+function initialer(navn) {
+  const i = (navn || "?").split(/\s+/).map((x) => x[0] || "").join("").slice(0, 2).toUpperCase();
+  return "data:image/svg+xml," + encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='16' cy='16' r='16' fill='#ffc21a'/><text x='16' y='21' text-anchor='middle' font-family='Arial' font-size='13' font-weight='bold' fill='#0f1519'>${i}</text></svg>`);
+}
+const brukerAdapter = {
+  me: async () => ({ id: meg.uid, name: meg.navn || "", avatarUrl: meg.foto || initialer(meg.navn), color: "#ffc21a", email: meg.epost || null, isOwner: meg.rolle === "admin", canEdit: meg.rolle === "admin" }),
+  profiles: async (ids) => {
+    await brukereLastet;
+    const ut = {};
+    [].concat(ids).forEach((id) => { const b = brukere[id]; ut[id] = { id, name: (b && b.navn) || "", avatarUrl: initialer(b && b.navn), color: "#ffc21a", isMe: id === meg.uid }; });
+    return ut;
+  },
+  search: async (q) => {
+    await brukereLastet;
+    const s = (q || "").toLowerCase();
+    return Object.entries(brukere).filter(([, b]) => b.rolle !== "venter" && b.rolle !== "sperret" && (b.navn || "").toLowerCase().includes(s))
+      .slice(0, 8).map(([id, b]) => ({ id, name: b.navn, avatarUrl: initialer(b.navn), color: "#ffc21a", isMe: id === meg.uid }));
+  },
+};
+
+// ---------------------------------------------------------------- oppstart etter innlogging
+let startet = false;
+function startApp() {
+  if (startet) return;
+  startet = true;
+  window.claude = { use: async (navn) => (navn === "db" ? dbAdapter : navn === "user" ? brukerAdapter : null) };
+  visLogin(false);
+  // alle godkjente brukere kan lese brukerlisten (navn til /tagger og ansvarlig)
+  onSnapshot(collection(fs, "brukere"), (snap) => {
+    brukere = {};
+    snap.docs.forEach((d) => { brukere[d.id] = d.data(); });
+    brukereKlar();
+    oppdaterAdminMerke();
+    if ($s("#innst-dlg").open) tegnBrukerliste();
+  }, () => brukereKlar());
+  window.kobleTilDelt();
+}
+
+onAuthStateChanged(auth, async (u) => {
+  if (!u) { visLogin(true); steg("login"); settFane(fane); return; }
+  steg("laster");
+  try {
+    const ref = doc(fs, "brukere", u.uid);
+    let snap = await getDoc(ref);
+    if (!snap.exists()) {
+      const navn = navnVedRegistrering || u.displayName || (u.email || "").split("@")[0];
+      const grunnlag = { navn, epost: u.email || "", opprettet: Date.now() };
+      const oppsett = await getDoc(doc(fs, "system", "oppsett"));
+      if (!oppsett.exists()) {
+        // første bruker blir administrator
+        const b = writeBatch(fs);
+        b.set(ref, Object.assign({ rolle: "admin" }, grunnlag));
+        b.set(doc(fs, "system", "oppsett"), { admin: u.uid, opprettet: Date.now() });
+        await b.commit();
+      } else {
+        await setDoc(ref, Object.assign({ rolle: "venter" }, grunnlag));
+      }
+    }
+    // følg med på egen rolle, så godkjenning og sperring slår inn med en gang
+    onSnapshot(ref, (d) => {
+      const data = d.data();
+      if (!data) return;
+      const forrige = meg && meg.rolle;
+      meg = { uid: u.uid, navn: data.navn, epost: data.epost, rolle: data.rolle, foto: u.photoURL || null };
+      if (data.rolle === "bruker" || data.rolle === "admin") {
+        if (startet && forrige && forrige !== data.rolle) { location.reload(); return; }
+        startApp();
+      } else {
+        if (startet) { location.reload(); return; }
+        visLogin(true);
+        steg("vent");
+        const sperret = data.rolle === "sperret";
+        $s("#sky-vent-tittel").textContent = sperret ? "Tilgangen er fjernet" : `Hei ${(data.navn || "").split(" ")[0]}! Venter på godkjenning`;
+        $s("#sky-vent-tekst").textContent = sperret
+          ? "En administrator har fjernet tilgangen din. Ta kontakt med administrator hvis dette er feil."
+          : "Kontoen din er opprettet. En administrator må godkjenne den under Innstillinger før du får tilgang. Siden åpner seg av seg selv når du er godkjent.";
+      }
+    }, (e) => { visLogin(true); steg("login"); visFeil(e); });
+  } catch (e) {
+    visLogin(true); steg("login"); visFeil(e);
+  }
+});
+
+// ---------------------------------------------------------------- innstillinger: konto og brukeradministrasjon
+const ROLLER = { admin: "Admin", bruker: "Bruker", venter: "Venter", sperret: "Sperret" };
+function antallAdmin() { return Object.values(brukere).filter((b) => b.rolle === "admin").length; }
+function oppdaterAdminMerke() {
+  const k = $s("#innst-knapp");
+  if (!k || !meg) return;
+  const venter = meg.rolle === "admin" ? Object.values(brukere).filter((b) => b.rolle === "venter").length : 0;
+  k.textContent = venter ? `⚙ Innstillinger · ${venter} venter` : "⚙ Innstillinger";
+  k.classList.toggle("gul", venter > 0);
+}
+function tegnBrukerliste() {
+  const ul = $s("#sky-brukere");
+  const liste = Object.entries(brukere).sort(([, a], [, b]) => {
+    const r = { venter: 0, admin: 1, bruker: 2, sperret: 3 };
+    return (r[a.rolle] - r[b.rolle]) || (a.navn || "").localeCompare(b.navn || "", "nb");
+  });
+  ul.innerHTML = "";
+  for (const [uid, b] of liste) {
+    const li = document.createElement("li");
+    const tekst = document.createElement("span");
+    const navn = document.createElement("b"); navn.textContent = b.navn || "(uten navn)";
+    const epost = document.createElement("small"); epost.textContent = " " + (b.epost || "");
+    tekst.append(navn, epost);
+    const rolle = document.createElement("span");
+    rolle.className = "sky-rolle " + b.rolle; rolle.textContent = ROLLER[b.rolle] || b.rolle;
+    li.append(tekst, rolle);
+    const knapp = (t, ny, klasse) => {
+      const k = document.createElement("button");
+      k.type = "button"; k.className = "knapp liten" + (klasse ? " " + klasse : ""); k.textContent = t;
+      k.addEventListener("click", () => settRolle(uid, b, ny));
+      li.append(k);
+    };
+    if (uid !== meg.uid) {
+      if (b.rolle === "venter") { knapp("Godkjenn", "bruker", "gul"); knapp("Avvis", "sperret", "fare-knapp"); }
+      else if (b.rolle === "bruker") { knapp("Gjør til admin", "admin"); knapp("Fjern tilgang", "sperret", "fare-knapp"); }
+      else if (b.rolle === "admin") { knapp("Gjør til bruker", "bruker"); }
+      else if (b.rolle === "sperret") { knapp("Gi tilgang", "bruker"); }
+    } else {
+      const deg = document.createElement("small"); deg.textContent = "(deg)"; li.append(deg);
+    }
+    ul.append(li);
+  }
+}
+async function settRolle(uid, b, ny) {
+  if (b.rolle === "admin" && ny !== "admin" && antallAdmin() <= 1) { alert("Det må være minst én administrator."); return; }
+  if (ny === "sperret" && !confirm(`Fjerne tilgangen for ${b.navn || b.epost}?`)) return;
+  try { await updateDoc(doc(fs, "brukere", uid), { rolle: ny, endretAv: meg.uid, endret: Date.now() }); }
+  catch (e) { alert(norsk(e)); }
+}
+window.SKY = {
+  visInnstillinger() {
+    $s("#sky-blokk").hidden = false;
+    $s("#sky-konto").textContent = meg ? `Innlogget som ${meg.navn || ""} (${meg.epost || ""}) · ${ROLLER[meg.rolle] || meg.rolle}` : "";
+    $s("#sky-brukere-blokk").hidden = !meg || meg.rolle !== "admin";
+    if (meg && meg.rolle === "admin") tegnBrukerliste();
+  },
+};
+$s("#sky-loggut").addEventListener("click", () => signOut(auth).then(() => location.reload()));
+</script>
