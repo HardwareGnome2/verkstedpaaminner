@@ -146,6 +146,13 @@ tr.blink td { animation: blink 1.2s steps(1) infinite; }
 td.tittel { font-weight: 500; }
 td.tittel small { display: block; font-weight: 400; color: var(--dempet); font-size: 12px; }
 td.pri { color: var(--rod) !important; font-size: 12px; }
+td.k-ansvar, th.k-ansvar { width: 84px; }
+.ansvar-merke { display: inline-flex; align-items: center; justify-content: center; min-width: 30px; height: 30px; padding: 0 6px; border-radius: 15px;
+  background: var(--panel2); border: 1px solid var(--kant); color: var(--tekst); font-family: var(--disp); font-weight: 700; font-size: 13px; letter-spacing: .04em; }
+.ansvar-merke.min { background: var(--gul); border-color: var(--gul); color: #0f1519; }
+tr.blink .ansvar-merke { color: var(--tekst); }
+.ingen-ansvar { color: var(--dempet); }
+body.kompakt .ansvar-merke { height: 24px; min-width: 26px; font-size: 12px; }
 .tag { color: var(--dempet); font-size: 13px; white-space: nowrap; }
 .ingen { padding: 50px 20px; text-align: center; color: var(--dempet); }
 @media (max-width: 1500px) { .k-kat { display: none; } }
@@ -522,7 +529,7 @@ dialog .fare { height: 9px; }
     <table id="tabell">
       <thead><tr>
         <th>Status</th><th aria-label="Prioritet"></th><th>Regnr</th><th class="k-kunde">Kunde</th>
-        <th>Tittel</th><th class="k-kat">Kategori</th><th>Neste varsel</th><th class="k-gj">Gjentakelse</th><th class="k-endret">Sist endret</th><th class="k-slett" aria-label="Slett"></th>
+        <th>Tittel</th><th class="k-kat">Kategori</th><th class="k-ansvar">Ansvarlig</th><th class="k-gj">Gjentakelse</th><th class="k-endret">Sist endret</th><th class="k-slett" aria-label="Slett"></th>
       </tr></thead>
       <tbody id="rader"></tbody>
     </table>
@@ -1345,6 +1352,16 @@ function varslerMeg(n) {
   return n.notify !== "meg" || n.createdBy === meg.id;
 }
 function ansvarNavn(n) { return n.assignee ? navnPaa({ by: n.assignee }) : (n.assigneeName || ""); }
+function initialer(navn) {
+  const deler = (navn || "").trim().split(/\s+/).filter(Boolean);
+  if (!deler.length) return "";
+  return (deler.length === 1 ? deler[0].slice(0, 2) : deler[0][0] + deler[deler.length - 1][0]).toUpperCase();
+}
+function ansvarMerke(n) {
+  const navn = ansvarNavn(n);
+  if (!navn) return `<span class="ingen-ansvar" title="Ingen ansvarlig">—</span>`;
+  return `<span class="ansvar-merke${erMin(n) ? " min" : ""}" title="Ansvarlig: ${esc(navn)}">${esc(initialer(navn))}</span>`;
+}
 function erMin(n) {
   if (modus === "delt") return !!n.assignee && n.assignee === meg.id;
   return !!n.assigneeName && !!lokaltNavn && n.assigneeName.toLowerCase() === lokaltNavn.toLowerCase();
@@ -1544,7 +1561,6 @@ function renderListe() {
     if (n.snart && n.status === "Under behandling") kl.push("snart");
     const deler = [];
     if (aktivMappe === "alle") deler.push(mappeNavn(mappeFor(n)));
-    if (ansvarNavn(n)) deler.push("→ /" + ansvarNavn(n));
     if (n.comments && n.comments.length) deler.push("💬 " + n.comments.length);
     const under = deler.length ? `<small>${esc(deler.join("  ·  "))}</small>` : "";
     const sist = n.updated ? `${esc(visMs(n.updated))} <span class="tag">${esc(tagg({ by: n.updatedBy, byName: n.updatedByName }))}</span>` : "—";
@@ -1555,7 +1571,7 @@ function renderListe() {
       <td class="k-kunde">${esc(n.customer)}</td>
       <td class="tittel">${esc(n.title)}${under}</td>
       <td class="k-kat">${esc(n.category)}</td>
-      <td>${esc(visTid(n.nextDue))}</td>
+      <td class="k-ansvar">${ansvarMerke(n)}</td>
       <td class="k-gj">${esc(gjentakTekst(n))}</td>
       <td class="k-endret">${sist}</td>
       <td class="k-slett"><button type="button" class="soppel" data-slett="${esc(n.id)}" aria-label="Slett notat" title="Slett">${SOPPEL}</button></td></tr>`;
@@ -2328,7 +2344,7 @@ function visBoble(el) {
   const sisteK = (n.comments || []).slice(-1)[0];
   b.innerHTML = `<b></b><div class="bm"></div>${n.body ? `<div class="bt"></div>` : ""}${sisteK ? `<div class="bk"></div>` : ""}`;
   b.querySelector("b").textContent = n.title;
-  b.querySelector(".bm").textContent = [meta, visStatus(n.status), ansvarNavn(n) ? "→ /" + ansvarNavn(n) : ""].filter(Boolean).join("  ·  ");
+  b.querySelector(".bm").textContent = [meta, visStatus(n.status), ansvarNavn(n) ? "→ /" + ansvarNavn(n) : "", n.nextDue ? "Neste varsel: " + visTid(n.nextDue) : ""].filter(Boolean).join("  ·  ");
   if (n.body) b.querySelector(".bt").textContent = n.body.length > 320 ? n.body.slice(0, 320) + " …" : n.body;
   if (sisteK) b.querySelector(".bk").textContent = `💬 ${tagg(sisteK) ? tagg(sisteK) + ": " : ""}${sisteK.txt}`;
   b.hidden = false;
