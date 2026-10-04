@@ -1194,18 +1194,7 @@ async function kobleTilDelt() {
   if (!d) { render(); return; }
   db = d;
 
-  db.collection("notater").onSnapshot((snap) => {
-    const liste = lesDocs(snap);
-    if (modus !== "delt") {
-      if (snap.metadata.fromCache) return;
-      modus = "delt";
-      migrerLokalt(liste);
-      lyttPrivat();
-    }
-    delte = liste;
-    slaaSammen();
-    render(); hentNavn(); sjekk();
-  }, frakoblet);
+  lyttNotater();
   db.collection("mapper").onSnapshot((snap) => { if (!snap.metadata.fromCache || mapper.length === 0) { mapper = lesDocs(snap); render(); hentNavn(); } }, () => {});
   db.doc("system/maler").onSnapshot((snap) => {
     const d = snap.exists ? snap.data() : null;
@@ -1216,7 +1205,43 @@ async function kobleTilDelt() {
     const d = snap.exists ? snap.data() : null;
     if (d && typeof d.at === "number" && d.at > wipeAt) utforWipe(d.at);
   }, () => {});
-  db.collection("oppslag").onSnapshot((snap) => { oppslag = lesDocs(snap); ryddOppslag(); render(); byggTicker(true); hentNavn(); }, () => {});
+  db.collection("oppslag").onSnapshot((snap) => {
+    const liste = lesDocs(snap);
+    if (snap.metadata.fromCache && !liste.length && oppslag.length) return;
+    oppslag = liste; ryddOppslag(); render(); byggTicker(true); hentNavn();
+  }, () => {});
+}
+
+// ---------------------------------------------------------------- robust tilkobling til delte notater
+let stoppNotater = null, vakthund = null, forsok = 0;
+let tilkoblingsproblem = false;
+function lyttNotater() {
+  if (!db) return;
+  if (stoppNotater) { try { stoppNotater(); } catch (e) {} }
+  clearTimeout(vakthund);
+  // får vi ikke et bekreftet svar fra serveren innen kort tid, kobler vi til på nytt
+  vakthund = setTimeout(() => {
+    if (modus === "delt" || !db) return;
+    forsok++;
+    if (forsok >= 3) { tilkoblingsproblem = true; renderTopp(); }
+    lyttNotater();
+  }, forsok ? 10000 : 8000);
+  stoppNotater = db.collection("notater").onSnapshot((snap) => {
+    const liste = lesDocs(snap);
+    if (modus !== "delt") {
+      if (snap.metadata.fromCache) return;          // vent på serveren før vi viser noe
+      modus = "delt";
+      clearTimeout(vakthund); forsok = 0; tilkoblingsproblem = false;
+      migrerLokalt(liste);
+      lyttPrivat();
+    } else if (snap.metadata.fromCache && !liste.length && delte.length) {
+      return;                                        // et tomt mellomsvar skal ikke tømme listen
+    }
+    if (tilkoblingsproblem) { tilkoblingsproblem = false; }
+    delte = liste;
+    slaaSammen();
+    render(); hentNavn(); sjekk();
+  }, frakoblet);
 }
 
 // Kjøres hos hver bruker når eieren har trykket «Slett alle kundedata»
@@ -1245,7 +1270,9 @@ function lyttPrivat() {
   if (!meg.id) { private_ = []; return; }
   private_ = [];
   db.collection("data/users/" + meg.id).onSnapshot((snap) => {
-    private_ = lesDocs(snap).map((n) => Object.assign(n, { folder: PRIVAT }));
+    const liste = lesDocs(snap).map((n) => Object.assign(n, { folder: PRIVAT }));
+    if (snap.metadata.fromCache && !liste.length && private_.length) return;
+    private_ = liste;
     slettGamlePrivate();
     slaaSammen(); render(); sjekk();
   }, () => {});
@@ -1264,7 +1291,21 @@ function migrerLokalt(delteNaa) {
   });
 }
 
-function frakoblet() {
+function frakoblet(e) {
+  if (SKY) {
+    // Firebase-utgaven: notatene blir stående, og vi prøver igjen i stedet for å gi opp
+    const kode = e && e.code;
+    if (kode === "not_granted" || kode === "revoked") {
+      // tilgangen kan ha endret seg; en ny innlasting viser riktig skjerm (innlogging, venter, fjernet)
+      toast("Tilgangen din ser ut til å ha endret seg. Laster inn på nytt …");
+      setTimeout(() => location.reload(), 2500);
+      return;
+    }
+    tilkoblingsproblem = true;
+    renderTopp();
+    setTimeout(lyttNotater, 4000);
+    return;
+  }
   modus = "frakoblet";
   db = null;
   skrivAltLokalt();
@@ -1887,7 +1928,16 @@ function renderStatistikk() {
 function renderTopp() {
   const el = $("#lagring");
   el.className = "brikke";
-  if (modus === "delt") {
+  el.onclick = null;
+  el.style.cursor = "";
+  el.removeAttribute("title");
+  if (SKY && tilkoblingsproblem) {
+    el.classList.add("feil");
+    el.textContent = "Ingen kontakt – trykk for å laste på nytt";
+    el.style.cursor = "pointer";
+    el.title = "Appen prøver å koble til igjen av seg selv. Du kan også laste siden på nytt.";
+    el.onclick = () => location.reload();
+  } else if (modus === "delt") {
     el.classList.add(kunLesing ? "feil" : "delt");
     el.textContent = kunLesing ? "Delt liste (kun lesing)" : "Delt i sanntid";
   } else if (modus === "frakoblet") {
@@ -3122,8 +3172,9 @@ const dbAdapter = {
   doc: (sti) => docRef(sti),
   collection: (sti) => ({
     doc: (id) => docRef(sti + "/" + id),
-    onSnapshot: (neste, feil) => onSnapshot(collection(fs, sti),
-      (snap) => neste({ docs: snap.docs.map((d) => ({ id: d.id, exists: true, data: () => d.data() })), metadata: { fromCache: snap.metadata.fromCache } }),
+    // includeMetadataChanges: et svar fra hurtigminnet blir alltid fulgt av et svar når serveren har bekreftet det
+    onSnapshot: (neste, feil) => onSnapshot(collection(fs, sti), { includeMetadataChanges: true },
+      (snap) => neste({ docs: snap.docs.map((d) => ({ id: d.id, exists: true, data: () => d.data() })), metadata: { fromCache: snap.metadata.fromCache, hasPendingWrites: snap.metadata.hasPendingWrites } }),
       (e) => feil && feil(dbFeil(e))),
   }),
 };
