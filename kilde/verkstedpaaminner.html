@@ -18,6 +18,7 @@
   --disp: "Bahnschrift", "Barlow Semi Condensed", "Segoe UI", system-ui, sans-serif;
   --brod: "Barlow", "Segoe UI", system-ui, sans-serif;
   --ticker: 42px;
+  --gul-glod: rgb(255 194 26 / .38); --gronn-glod: rgb(63 178 127 / .28);
   box-sizing: border-box;
   padding-top: env(safe-area-inset-top, 0px);
 }
@@ -251,6 +252,35 @@ dialog.lett { width: min(560px, 94vw); }
 .ikon-knapp { padding: 6px 10px; }
 #toast .angre { margin-left: 14px; background: var(--gul); color: #0f1519; border: none; padding: 3px 12px; border-radius: 3px; font-weight: 700; cursor: pointer; }
 .anonym { font-size: 13px; color: var(--dempet); font-style: italic; }
+
+/* animasjoner: nye, slettede og behandlede notater */
+tr.ny-rad:not(.blink):not(.snart) > td { animation: rad-inn 1200ms ease-out both; animation-delay: var(--forsinkelse, 0ms); }
+@keyframes rad-inn {
+  0% { opacity: 0; transform: translateY(-10px); background: var(--gul-glod); }
+  22% { opacity: 1; transform: none; background: var(--gul-glod); }
+  100% { background: transparent; }
+}
+tr.spokelse { pointer-events: none; }
+tr.spokelse > td { animation: rad-ut-farge 640ms linear forwards, rad-ut-pad 300ms ease-in forwards;
+  animation-delay: var(--forsinkelse, 0ms), calc(300ms + var(--forsinkelse, 0ms)); }
+tr.spokelse > td > .kollaps { overflow: hidden; max-height: var(--h, 48px);
+  animation: rad-ut-glid 300ms ease-in forwards, rad-ut-hoyde 300ms ease-in forwards;
+  animation-delay: var(--forsinkelse, 0ms), calc(300ms + var(--forsinkelse, 0ms)); }
+@keyframes rad-ut-farge { from, to { background: var(--spokelse-farge); } }
+@keyframes rad-ut-pad { to { padding-top: 0; padding-bottom: 0; } }
+@keyframes rad-ut-glid { to { opacity: 0; transform: translateX(var(--glid, 56px)); } }
+@keyframes rad-ut-hoyde { to { max-height: 0; } }
+tr.spokelse.slettet { --spokelse-farge: var(--rod-svak); }
+tr.spokelse.ferdig { --spokelse-farge: var(--gronn-glod); --glid: 0px; }
+tr.spokelse.ferdig > td:first-child > .kollaps { color: var(--gronn); font-weight: 700; white-space: nowrap; }
+.hendelse.ny { animation: hendelse-inn 900ms ease-out both; animation-delay: var(--forsinkelse, 0ms); }
+@keyframes hendelse-inn { 0% { opacity: 0; transform: scale(.9); box-shadow: 0 0 0 3px var(--gul); } 30% { opacity: 1; transform: none; box-shadow: 0 0 0 3px var(--gul); } 100% { box-shadow: 0 0 0 0 transparent; } }
+@media (prefers-reduced-motion: reduce) {
+  tr.ny-rad:not(.blink):not(.snart) > td { animation-name: rad-inn-rolig; }
+  @keyframes rad-inn-rolig { 0%, 30% { background: var(--gul-glod); } 100% { background: transparent; } }
+  @keyframes rad-ut-glid { to { opacity: 0; } }
+  .hendelse.ny { animation: none; }
+}
 
 /* søppelbøtte, høyreklikkmeny og slettebekreftelse */
 th.k-slett, td.k-slett { width: 38px; padding: 0 6px; text-align: center; }
@@ -772,6 +802,12 @@ let lokaltNavn = "";
 let wipeAt = 0;
 let visning = "liste";
 let planlagtAapen = false;
+// animasjoner
+let kjenteIder = null;                 // id-ene som fantes i dataene ved forrige tegning
+const forrigeStatus = new Map();
+const animInn = new Map();             // id -> starttid for «nytt notat»-animasjonen
+let spokelser = [];                    // rader som animeres ut etter sletting eller behandling
+const INN_MS = 1200, UT_MS = 650;
 let egneMaler = null;               // null = standardmalene
 let angreFn = null;               // liste | uke | maned
 let kalDato = new Date();                     // tidspunkt for siste fullstendige sletting (ms)
@@ -1463,24 +1499,105 @@ function synligeNotater(utenDagsfilter) {
     [n.title, n.customer, n.phone, n.regnr, n.body, n.category, ansvarNavn(n), (n.comments || []).map((c) => c.txt).join(" ")].join(" ").toLowerCase().replace(/\s/g, "").includes(s)));
 }
 
+// Finner nye og forsvunne notater siden forrige tegning, og husker radene som skal animeres ut.
+function oppdaterAnimasjoner(gamleRader, nyeSynlige) {
+  const naa = Date.now();
+  const dataIder = new Set(notater.map((n) => n.id));
+  if (kjenteIder === null) {
+    kjenteIder = dataIder;
+    notater.forEach((n) => forrigeStatus.set(n.id, n.status));
+    return;
+  }
+  for (const n of notater) {
+    // bare nylig opprettede eller gjenopprettede notater, ikke alt som kommer inn ved oppstart
+    if (!kjenteIder.has(n.id) && (n.updated || 0) > naa - 15000 && !animInn.has(n.id)) animInn.set(n.id, naa);
+  }
+  if (gamleRader) {
+    const synligNaa = new Set(nyeSynlige.map((n) => n.id));
+    for (const [id, rad] of gamleRader) {
+      let type = null;
+      if (!dataIder.has(id) && kjenteIder.has(id)) type = "slettet";
+      else if (!synligNaa.has(id) && forrigeStatus.get(id) !== "Behandlet" && (notater.find((n) => n.id === id) || {}).status === "Behandlet") type = "ferdig";
+      if (type && spokelser.length < 40 && !spokelser.some((g) => g.id === id)) spokelser.push(Object.assign({ id, type, start: naa }, rad));
+    }
+  }
+  kjenteIder = dataIder;
+  forrigeStatus.clear();
+  notater.forEach((n) => forrigeStatus.set(n.id, n.status));
+  for (const [id, t] of animInn) if (naa - t > INN_MS) animInn.delete(id);
+  spokelser = spokelser.filter((g) => naa - g.start < UT_MS);
+}
+function innAnimasjon(id) {
+  const t = animInn.get(id);
+  if (t === undefined) return null;
+  const gaatt = Date.now() - t;
+  return gaatt < INN_MS ? `--forsinkelse:-${gaatt}ms` : null;
+}
+function settInnSpokelser() {
+  const tbody = $("#rader");
+  const naa = Date.now();
+  for (const g of spokelser) {
+    const gaatt = naa - g.start;
+    if (gaatt >= UT_MS) continue;
+    const mal = document.createElement("template");
+    mal.innerHTML = g.html.trim();
+    const tr = mal.content.firstElementChild;
+    if (!tr) continue;
+    tr.classList.remove("valgt", "blink", "snart", "ny-rad");
+    tr.classList.add("spokelse", g.type);
+    tr.removeAttribute("data-id");
+    tr.removeAttribute("tabindex");
+    tr.setAttribute("aria-hidden", "true");
+    tr.dataset.spokelse = g.id;
+    tr.style.cssText = `--h:${g.h}px;--forsinkelse:-${gaatt}ms`;
+    tr.querySelectorAll("button").forEach((b) => { b.tabIndex = -1; });
+    if (g.type === "ferdig" && tr.firstElementChild) tr.firstElementChild.textContent = "✔\u00a0 Behandlet";
+    for (const td of tr.children) {
+      const k = document.createElement("div");
+      k.className = "kollaps";
+      while (td.firstChild) k.appendChild(td.firstChild);
+      td.appendChild(k);
+    }
+    const finn = (id) => id && (tbody.querySelector(`tr[data-id="${CSS.escape(id)}"]`) || tbody.querySelector(`tr[data-spokelse="${CSS.escape(id)}"]`));
+    const etter = finn(g.neste), foran = finn(g.forrige);
+    if (etter) tbody.insertBefore(tr, etter);
+    else if (foran) foran.after(tr);
+    else tbody.appendChild(tr);
+    setTimeout(() => tr.remove(), UT_MS - gaatt);
+  }
+}
+
 function renderListe() {
   document.querySelectorAll("[data-vis]").forEach((b) => b.classList.toggle("aktiv", b.dataset.vis === visning));
   const kal = visning !== "liste";
+  // husk radene som vises nå, så vi kan animere dem ut hvis de forsvinner
+  let gamleRader = null;
+  if (!$("#tabell").hidden && !kal) {
+    gamleRader = new Map();
+    const rader = [...$("#rader").querySelectorAll("tr[data-id]")];
+    rader.forEach((tr, i) => gamleRader.set(tr.dataset.id, {
+      html: tr.outerHTML, h: tr.offsetHeight,
+      neste: rader[i + 1] ? rader[i + 1].dataset.id : null, forrige: rader[i - 1] ? rader[i - 1].dataset.id : null,
+    }));
+  }
   $("#tabell").hidden = kal;
   $("#kalender").hidden = !kal;
-  if (kal) { $("#ingen").hidden = true; renderKalender(); return; }
   const synlige = synligeNotater(false);
+  oppdaterAnimasjoner(gamleRader, kal ? [] : synlige);
+  if (kal) { $("#ingen").hidden = true; renderKalender(); return; }
   const radHtml = (n) => {
     const kl = ["st-" + n.status.split(" ")[0]];
     if (n.id === valgtId) kl.push("valgt");
     if (n.alerting && n.alertMode === "blink" && varslerMeg(n)) kl.push("blink");
     if (n.snart && n.status === "Under behandling") kl.push("snart");
+    const inn = innAnimasjon(n.id);
+    if (inn) kl.push("ny-rad");
     const deler = [];
     if (aktivMappe === "alle") deler.push(mappeNavn(mappeFor(n)));
     if (n.comments && n.comments.length) deler.push("💬 " + n.comments.length);
     const under = deler.length ? `<small>${esc(deler.join("  ·  "))}</small>` : "";
     const sist = n.updated ? `${esc(visMs(n.updated))} <span class="tag">${esc(tagg({ by: n.updatedBy, byName: n.updatedByName }))}</span>` : "—";
-    return `<tr class="${kl.join(" ")}" data-id="${esc(n.id)}" tabindex="0">
+    return `<tr class="${kl.join(" ")}" data-id="${esc(n.id)}" tabindex="0"${inn ? ` style="${inn}"` : ""}>
       <td>${IKON[n.status] || ""}&nbsp; ${esc(visStatus(n.status))}${n.snart && n.status === "Under behandling" ? KAL_IKON : ""}</td>
       <td class="pri">${n.priority === "Haster" ? "▲▲" : n.priority === "Høy" ? "▲" : ""}</td>
       <td>${skilt(n.regnr, "liten")}</td>
@@ -1506,6 +1623,7 @@ function renderListe() {
     html += radHtml(n);
   }
   $("#rader").innerHTML = html;
+  settInnSpokelser();
   const ingen = $("#ingen");
   ingen.hidden = synlige.length > 0;
   if (!synlige.length) {
@@ -1552,9 +1670,11 @@ function hendelseHtml({ n, d }, kort) {
   if (n.status === "Behandlet") kl.push("ferdig");
   if (n.alerting && varslerMeg(n)) kl.push("alarm");
   if (n.snart && n.status === "Under behandling") kl.push("snart");
+  const inn = innAnimasjon(n.id);
+  if (inn) kl.push("ny");
   const c = n.priority === "Haster" && n.status !== "Behandlet" ? "var(--rod)" : STATUS_C[n.status];
   const tittel = `${pad(d.getHours())}:${pad(d.getMinutes())} ${n.title}${n.regnr ? " · " + formatRegnr(n.regnr) : ""}${n.customer ? " · " + n.customer : ""}`;
-  return `<button type="button" class="${kl.join(" ")}" style="--c:${c}" data-id="${esc(n.id)}" aria-label="${esc(tittel)}">
+  return `<button type="button" class="${kl.join(" ")}" style="--c:${c};${inn || ""}" data-id="${esc(n.id)}" aria-label="${esc(tittel)}">
     <span class="l"><time>${pad(d.getHours())}:${pad(d.getMinutes())}</time>${n.regnr && !kort ? `<span class="r">${esc(formatRegnr(n.regnr))}</span>` : ""}</span>
     <span class="t">${esc(n.title)}</span></button>`;
 }
@@ -1800,6 +1920,7 @@ function gjenopprett(for_, tekst) {
   const n = kopiAv(for_);
   (n.log = n.log || []).push(Object.assign({ t: iso(new Date()), txt: "Angret: " + tekst }, forfatter()));
   valgtId = n.id;
+  animInn.set(n.id, Date.now());   // vis at saken kom tilbake
   lagre(n, naa ? mappeFor(naa) : undefined);
   toast("Angret.");
 }
