@@ -253,6 +253,11 @@ dialog.lett { width: min(560px, 94vw); }
 #toast .angre { margin-left: 14px; background: var(--gul); color: #0f1519; border: none; padding: 3px 12px; border-radius: 3px; font-weight: 700; cursor: pointer; }
 .anonym { font-size: 13px; color: var(--dempet); font-style: italic; }
 
+/* planlagt-hint og «Jeg tar denne» */
+.plan-hint { font-size: 13px; color: var(--dempet); margin-top: 8px; }
+.plan-hint b { color: var(--tekst); font-weight: 600; }
+.min-sak { color: var(--gul-tekst); font-weight: 600; font-size: 14px; }
+
 /* animasjoner: nye, slettede og behandlede notater */
 tr.ny-rad:not(.blink):not(.snart) > td { animation: rad-inn 1200ms ease-out both; animation-delay: var(--forsinkelse, 0ms); }
 @keyframes rad-inn {
@@ -524,6 +529,7 @@ dialog .fare { height: 9px; }
           <button type="button" class="knapp liten" data-hurtig="imorgen">I morgen 08:00</button>
           <button type="button" class="knapp liten" data-hurtig="mandag">Mandag 08:00</button>
         </div>
+        <div class="plan-hint" id="f-plan-hint" hidden></div>
         <div class="radio">
           <label><input type="radio" name="f-modus" value="popup" checked> Popup-varsel</label>
           <label><input type="radio" name="f-modus" value="blink"> Bare blinking i listen</label>
@@ -1179,6 +1185,25 @@ function settStatus(n, status) {
   lagre(n);
 }
 
+function taSak(n) {
+  const delt = modus === "delt" && !!meg.id;
+  if (!delt && !lokaltNavn) {
+    toast("Skriv inn navnet ditt under Innstillinger først, så andre ser hvem som har saken.");
+    aapneInnstillinger();
+    return;
+  }
+  if (erMin(n)) { toast("Du har allerede denne saken."); return; }
+  const annen = ansvarNavn(n);
+  if (annen && !confirm(`/${annen} er ansvarlig for denne saken.\nVil du ta den over?`)) return;
+  medAngre(n, annen ? `Du har tatt over saken fra /${annen}.` : "Du har tatt saken.", () => {
+    if (delt) { n.assignee = meg.id; n.assigneeName = null; } else { n.assigneeName = lokaltNavn; n.assignee = null; }
+    logg(n, annen ? `Tok over saken fra /${annen}` : "Tok saken");
+    if (n.status !== "Under behandling") { logg(n, `Status: ${visStatus(n.status)} → Under behandling`); n.status = "Under behandling"; }
+    n.ferdigAt = null; n.snart = false; n.alerting = false;
+    lagre(n);
+  });
+}
+
 function utsett(n, minutter, iMorgen) {
   const dt = iMorgen ? (() => { const d = leggTilDager(new Date(), 1); d.setHours(8, 0, 0, 0); return d; })() : new Date(Date.now() + minutter * 60000);
   n.nextDue = iso(dt);
@@ -1223,6 +1248,7 @@ function visMeny(id, x, y) {
   skjulBoble();
   const knapp = (attr, ikon, tekst, klasse) => `<button type="button" role="menuitem" ${attr}${klasse ? ` class="${klasse}"` : ""}><span class="mi">${ikon}</span>${esc(tekst)}</button>`;
   let html = `<div class="mtittel"></div>`
+    + (erMin(n) ? "" : knapp('data-handling="ta"', "✋", "Jeg tar denne") + "<hr>")
     + knapp('data-handling="rediger"', "✎", "Rediger")
     + knapp('data-handling="dupliser"', "⧉", "Dupliser") + "<hr>";
   STATUSER.filter((st) => st !== "Ny" && st !== n.status).forEach((st) => { html += knapp(`data-status="${st}"`, IKON[st], st); });
@@ -1391,6 +1417,8 @@ function systemVarsel(n) {
       tag: n.id, requireInteraction: true
     });
     v.onclick = () => { window.focus(); valgtId = n.id; render(); v.close(); };
+    v.onclose = () => systemVarslerApne.delete(n.id);
+    systemVarslerApne.set(n.id, v);
   } catch (e) {}
 }
 
@@ -1838,6 +1866,8 @@ function renderDetalj() {
       <dt>Opprettet</dt><dd>${esc(visTid(n.created))} ${esc(opprettet)}</dd>
       <dt>Sist endret</dt><dd>${esc(visMs(n.updated))} ${esc(endret)}</dd>
     </dl>
+    <div class="rad">${erMin(n) ? `<span class="min-sak">✋ Du har denne saken</span>`
+      : `<button class="knapp gul" data-handling="ta">✋&nbsp; Jeg tar denne${ansvarNavn(n) ? " (ta over)" : ""}</button>`}</div>
     <div class="rad">
       ${STATUSER.filter((s) => s !== "Ny").map((s) => `<button class="knapp liten${s === "Behandlet" ? " gul" : ""}" data-status="${s}" ${n.status === s ? "disabled" : ""}>${IKON[s]}&nbsp; ${s}</button>`).join("")}
     </div>
@@ -1867,8 +1897,44 @@ function renderDetalj() {
   if (utkast) { $("#k-tekst").value = utkast.v; if (utkast.fokus) $("#k-tekst").focus(); }
 }
 
+const visteVarsler = new Map();          // id -> tittel på påminnelser som vises i vinduet nå
+const systemVarslerApne = new Map();     // id -> Windows-varsel som fortsatt står fremme
+function hvaSkjedde(n) {
+  if (!n) return "fjernet";
+  if (n.status === "Behandlet") return "behandlet";
+  if (n.status === "Under behandling" && n.assignee === n.updatedBy && n.assignee) return "tok";
+  if (n.status === "Under behandling") return "satte under behandling";
+  if (n.status === "Lest") return "markerte som lest";
+  return "utsatte";
+}
+function meldHandletAvAndre(aktive) {
+  const naaIder = new Set(aktive.map((n) => n.id));
+  const meldinger = [];
+  for (const [id, tittel] of visteVarsler) {
+    if (naaIder.has(id)) continue;
+    visteVarsler.delete(id);
+    const n = finn(id);
+    if (modus !== "delt" || !n || !n.updatedBy || n.updatedBy === meg.id) continue;
+    meldinger.push({ by: n.updatedBy, tekst: ` ${hvaSkjedde(n)} «${tittel}»` });
+  }
+  aktive.forEach((n) => visteVarsler.set(n.id, n.title));
+  for (const [id, v] of systemVarslerApne) {
+    const n = finn(id);
+    if (!n || !n.alerting) { try { v.close(); } catch (e) {} systemVarslerApne.delete(id); }
+  }
+  if (!meldinger.length) return;
+  (async () => {
+    const mangler = meldinger.map((m) => m.by).filter((id) => !navnCache[id]);
+    if (mangler.length && user && typeof user.profiles === "function") {
+      try { const pr = await user.profiles(mangler); Object.values(pr).forEach((x) => { if (x.name) navnCache[x.id] = x.name; }); } catch (e) {}
+    }
+    toast(meldinger.map((m) => "/" + navnPaa({ by: m.by }) + m.tekst).join("  ·  "));
+  })();
+}
+
 function renderVarsler() {
   const aktive = sortert(mineVarsler()).filter((n) => n.alertMode !== "blink");
+  meldHandletAvAndre(aktive);
   const dlg = $("#varsler");
   if (!aktive.length) { if (dlg.open) dlg.close(); return; }
   $("#varsel-liste").innerHTML = aktive.map((n) => {
@@ -1885,7 +1951,8 @@ function renderVarsler() {
       ${meta ? `<div class="meta">${meta}</div>` : ""}
       ${n.body ? `<div class="notat-tekst">${esc(n.body)}</div>` : ""}
       <div class="rad" style="margin-top:14px">
-        <button class="knapp gul" data-status="Behandlet">✔&nbsp; Behandlet</button>
+        <button class="knapp gul" data-handling="ta">✋&nbsp; Jeg tar denne</button>
+        <button class="knapp" data-status="Behandlet">✔&nbsp; Behandlet</button>
         <button class="knapp" data-status="Under behandling">◐&nbsp; Under behandling</button>
         <button class="knapp" data-status="Lest">○&nbsp; Lest</button>
       </div>
@@ -2136,9 +2203,19 @@ function aapneRedigering(n, forvalgtDato, kilde) {
   document.querySelector(`input[name="f-hvem"][value="${["meg", "ansvarlig"].includes(x.notify) ? x.notify : "alle"}"]`).checked = true;
   if (!n && forvalgtDato) { $("#f-dato").value = forvalgtDato; $("#f-tid").value = "09:00"; $("#f-gj").value = "once"; }
   oppdaterHvem();
+  oppdaterPlanHint();
   if ($("#varsler").open) $("#varsler").close();
   $("#rediger").showModal();
   $("#f-tittel").focus();
+}
+function oppdaterPlanHint() {
+  const el = $("#f-plan-hint");
+  const gj = $("#f-gj").value;
+  const neste = gj === "none" ? null : nesteTid({ repeat: gj, date: $("#f-dato").value, time: $("#f-tid").value }, new Date());
+  if (!neste || $("#f-status").value === "Behandlet" || virkedagerTil(neste) <= HORISONT) { el.hidden = true; return; }
+  const a = aktiveresDato(neste);
+  el.innerHTML = `◷ Mer enn ${HORISONT} virkedager frem: havner i <b>Lengre frem i tid</b> og hentes frem ${UKEDAG[a.getDay()]} ${a.getDate()}.${a.getMonth() + 1}.`;
+  el.hidden = false;
 }
 function oppdaterHvem() { $("#hvem-rad").hidden = modus !== "delt" || $("#f-mappe").value === PRIVAT; }
 
@@ -2157,6 +2234,7 @@ function hurtig(valg) {
   $("#f-dato").value = isoDato(d);
   $("#f-tid").value = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
   if ($("#f-gj").value === "none") $("#f-gj").value = "once";
+  oppdaterPlanHint();
 }
 
 function lagreSkjema(e) {
@@ -2203,7 +2281,9 @@ function lagreSkjema(e) {
     if (n.status !== status) { logg(n, `Status: ${visStatus(n.status)} → ${visStatus(status)}`); n.status = status; }
   }
   n.snart = false;
-  if (n.status === "Ny" && n.nextDue && !innenforHorisont(n)) {
+  // langt frem i tid: nye notater, og eksisterende når påminnelsen flyttes, havner i «Lengre frem i tid»
+  const planEndret = ny || !forKopi || forKopi.nextDue !== n.nextDue;
+  if (planEndret && n.nextDue && !innenforHorisont(n) && n.status !== "Behandlet" && n.status !== "Planlagt") {
     logg(n, `Lagt i Lengre frem i tid (mer enn ${HORISONT} virkedager til påminnelsen)`);
     n.status = "Planlagt";
   }
@@ -2444,6 +2524,7 @@ function handlingPaa(n, knapp) {
   if (!n || !knapp) return;
   if (knapp.dataset.status) { const st = knapp.dataset.status; medAngre(n, `Status satt til ${visStatus(st)}.`, () => settStatus(n, st)); }
   else if (knapp.dataset.utsett) { const u = knapp.dataset.utsett; medAngre(n, "Påminnelsen er utsatt.", () => utsett(n, +u || 0, u === "imorgen")); }
+  else if (knapp.dataset.handling === "ta") taSak(n);
   else if (knapp.dataset.handling === "rediger") aapneRedigering(n);
   else if (knapp.dataset.handling === "dupliser") aapneRedigering(null, null, n);
   else if (knapp.dataset.handling === "vis-bil") { $("#sok").value = n.regnr; $("#filter").value = "Alle"; visning = "liste"; renderListe(); }
@@ -2643,6 +2724,12 @@ function oppsett() {
   $("#skjema").addEventListener("submit", lagreSkjema);
   $("#avbryt").addEventListener("click", () => { $("#rediger").close(); render(); });
   $("#f-mappe").addEventListener("change", oppdaterHvem);
+  // velger man dato eller klokkeslett, gjelder påminnelsen (ellers ble datoen ignorert)
+  ["#f-dato", "#f-tid"].forEach((sel) => ["input", "change"].forEach((ev) => $(sel).addEventListener(ev, () => {
+    if ($("#f-gj").value === "none" && $(sel).value) $("#f-gj").value = "once";
+    oppdaterPlanHint();
+  })));
+  ["#f-gj", "#f-status"].forEach((sel) => $(sel).addEventListener("change", oppdaterPlanHint));
   $("#f-mal").addEventListener("change", () => {
     const m = maler()[+$("#f-mal").value];
     if (!$("#f-mal").value || !m) return;
