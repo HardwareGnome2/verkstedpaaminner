@@ -7,7 +7,8 @@ rules_version = '2';
 //   admin   – full tilgang, godkjenner brukere og kan slette alle kundedata
 //   bruker  – godkjent kollega, full tilgang til delte mapper og egen privat mappe
 //   venter  – har opprettet konto, men er ikke godkjent ennå (ingen tilgang til data)
-//   sperret – tilgangen er fjernet (ingen tilgang til data)
+//   sperret – tilgangen er stoppet permanent (ingen tilgang, kan ikke søke på nytt)
+//   fjernet – fjernet fra appen (ingen tilgang; kan slette egne private notater og søke om ny tilgang)
 // Den aller første som oppretter konto blir automatisk admin.
 
 service cloud.firestore {
@@ -34,11 +35,14 @@ service cloud.firestore {
               && getAfter(/databases/$(database)/documents/system/oppsett).data.admin == uid)
         );
 
-      // admin kan endre roller; brukeren selv kan bare endre navnet sitt
+      // admin kan endre roller; brukeren selv kan endre navnet sitt, eller søke på nytt etter å ha blitt fjernet
       allow update: if admin()
         || (innlogget() && request.auth.uid == uid
             && request.resource.data.rolle == resource.data.rolle
-            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['navn']));
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['navn']))
+        || (innlogget() && request.auth.uid == uid
+            && resource.data.rolle == 'fjernet' && request.resource.data.rolle == 'venter'
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rolle', 'sokt']));
       allow delete: if admin();
     }
 
@@ -72,6 +76,8 @@ service cloud.firestore {
     // ---------- private mapper: bare eieren kan lese og skrive
     match /data/users/{uid}/{id} {
       allow read, write: if medlem() && request.auth.uid == uid;
+      // en fjernet bruker kan bare lese og slette sine egne private notater (opprydding)
+      allow read, delete: if innlogget() && request.auth.uid == uid && minRolle() == 'fjernet';
     }
   }
 }

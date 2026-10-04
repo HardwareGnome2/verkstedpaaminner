@@ -258,6 +258,16 @@ dialog.lett { width: min(560px, 94vw); }
 .plan-hint b { color: var(--tekst); font-weight: 600; }
 .min-sak { color: var(--gul-tekst); font-weight: 600; font-size: 14px; }
 
+/* detaljpanel: skjules når ingen notat er åpent */
+.hoved.uten-detalj .detalj { display: none; }
+@media (min-width: 1241px) { .hoved.uten-detalj { grid-template-columns: 210px minmax(0, 1fr); } }
+.detalj { animation: detalj-inn 180ms ease-out; }
+@keyframes detalj-inn { from { opacity: 0; transform: translateX(12px); } }
+.lukk-detalj { float: right; background: none; border: 1px solid transparent; border-radius: 50%; width: 32px; height: 32px; margin: -6px -6px 0 8px;
+  color: var(--dempet); font-size: 16px; cursor: pointer; line-height: 1; }
+.lukk-detalj:hover { background: var(--panel2); border-color: var(--kant); color: var(--tekst); }
+@media (prefers-reduced-motion: reduce) { .detalj { animation: none; } }
+
 /* animasjoner: nye, slettede og behandlede notater */
 tr.ny-rad:not(.blink):not(.snart) > td { animation: rad-inn 1200ms ease-out both; animation-delay: var(--forsinkelse, 0ms); }
 @keyframes rad-inn {
@@ -1185,6 +1195,24 @@ function settStatus(n, status) {
   lagre(n);
 }
 
+// brukes av Firebase-utgaven når en administrator fjerner en bruker
+function antallAnsvar(fraId) { return notater.filter((n) => n.assignee === fraId && !erPrivat(n) && n.status !== "Behandlet").length; }
+function overforAnsvar(fraId, fraNavn) {
+  const liste = notater.filter((n) => n.assignee === fraId && !erPrivat(n) && n.status !== "Behandlet");
+  liste.forEach((n) => {
+    n.assignee = meg.id; n.assigneeName = null;
+    logg(n, `Ansvar overført fra /${fraNavn} (fjernet fra appen)`);
+    lagre(n);
+  });
+  return liste.length;
+}
+
+// velger et notat; klikker man på det som allerede er åpent, lukkes det
+function velg(id, veksle) {
+  valgtId = veksle && valgtId === id ? null : id;
+  render();
+}
+
 function taSak(n) {
   const delt = modus === "delt" && !!meg.id;
   if (!delt && !lokaltNavn) {
@@ -1835,7 +1863,8 @@ function statusFarge(s) { return { "Ny": "var(--gul-tekst)", "Lest": "var(--bla)
 function renderDetalj() {
   const n = finn(valgtId);
   const el = $("#detalj");
-  if (!n) { el.innerHTML = `<div class="tom">Velg et notat for å se detaljer,<br>eller trykk «+ Nytt notat».</div>`; return; }
+  $(".hoved").classList.toggle("uten-detalj", !n);
+  if (!n) { el.innerHTML = ""; return; }
   const loggHtml = (n.log || []).slice().reverse().map((l) => {
     const t = fraIso(l.t);
     const tid = t ? `${pad(t.getDate())}.${pad(t.getMonth() + 1)} ${pad(t.getHours())}:${pad(t.getMinutes())}` : esc(l.t);
@@ -1850,6 +1879,7 @@ function renderDetalj() {
   const andreSaker = rn ? notater.filter((x) => x.id !== n.id && (x.regnr || "").toUpperCase().replace(/\s/g, "") === rn).length : 0;
   const kommentarer = (n.comments || []).map((c) => `<div class="kommentar"><div class="k-hode"><b>${esc(tagg(c) || "")}</b> ${esc(visTid(c.t))}</div><div>${esc(c.txt)}</div></div>`).join("");
   el.innerHTML = `
+    <button type="button" class="lukk-detalj" data-handling="lukk" aria-label="Lukk notatet" title="Lukk (Esc)">✕</button>
     ${skilt(n.regnr, "stor")}
     ${andreSaker ? `<div style="margin-top:6px"><button class="lenke" data-handling="vis-bil">${andreSaker} ${andreSaker === 1 ? "annen sak" : "andre saker"} på denne bilen</button></div>` : ""}
     <h2>${esc(n.title)}</h2>
@@ -2525,6 +2555,7 @@ function handlingPaa(n, knapp) {
   if (knapp.dataset.status) { const st = knapp.dataset.status; medAngre(n, `Status satt til ${visStatus(st)}.`, () => settStatus(n, st)); }
   else if (knapp.dataset.utsett) { const u = knapp.dataset.utsett; medAngre(n, "Påminnelsen er utsatt.", () => utsett(n, +u || 0, u === "imorgen")); }
   else if (knapp.dataset.handling === "ta") taSak(n);
+  else if (knapp.dataset.handling === "lukk") velg(null);
   else if (knapp.dataset.handling === "rediger") aapneRedigering(n);
   else if (knapp.dataset.handling === "dupliser") aapneRedigering(null, null, n);
   else if (knapp.dataset.handling === "vis-bil") { $("#sok").value = n.regnr; $("#filter").value = "Alle"; visning = "liste"; renderListe(); }
@@ -2637,7 +2668,7 @@ function oppsett() {
     const gaa = e.target.closest("[data-gaa-til]");
     if (gaa) { kalDato = fraDato(gaa.dataset.gaaTil); visning = "uke"; lsSkriv("verkstedpaaminner.visning", visning); renderListe(); return; }
     const h = e.target.closest(".hendelse");
-    if (h) { valgtId = h.dataset.id; render(); return; }
+    if (h) { velg(h.dataset.id, true); return; }
     const dag = e.target.closest("[data-dato]");
     if (dag) aapneRedigering(null, dag.dataset.dato);
   });
@@ -2686,7 +2717,7 @@ function oppsett() {
     if (sb) { e.stopPropagation(); sporSlettVed(sb.dataset.slett, sb); return; }
     if (e.target.closest("tr.gruppe")) { planlagtAapen = !planlagtAapen; lsSkriv("verkstedpaaminner.planlagtAapen", planlagtAapen); renderListe(); return; }
     const tr = e.target.closest("tr[data-id]");
-    if (tr) { valgtId = tr.dataset.id; render(); }
+    if (tr) velg(tr.dataset.id, true);
   });
   $("#rader").addEventListener("dblclick", (e) => {
     const tr = e.target.closest("tr[data-id]");
@@ -2700,7 +2731,7 @@ function oppsett() {
     if (e.key === "Delete") { e.preventDefault(); sporSlettVed(tr.dataset.id, tr.querySelector(".soppel")); return; }
     if (e.key === "ContextMenu" || (e.shiftKey && e.key === "F10")) { e.preventDefault(); const r = tr.getBoundingClientRect(); valgtId = tr.dataset.id; render(); visMeny(valgtId, r.left + 40, r.bottom); return; }
     if (e.key === "Enter") aapneRedigering(finn(tr.dataset.id));
-    if (e.key === " ") { e.preventDefault(); valgtId = tr.dataset.id; render(); }
+    if (e.key === " ") { e.preventDefault(); velg(tr.dataset.id, true); }
   });
   $("#detalj").addEventListener("click", (e) => handlingPaa(finn(valgtId), e.target.closest("button")));
   $("#detalj").addEventListener("change", (e) => { if (e.target.id === "d-mappe") { const n = finn(valgtId), m = e.target.value; if (n) medAngre(n, `Flyttet til ${mappeNavn(m)}.`, () => flytt(n, m)); } });
@@ -2847,6 +2878,7 @@ function oppsett() {
     const iFelt = /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
     if (e.key === "/" && !iFelt && !document.querySelector("dialog[open]")) { e.preventDefault(); $("#sok").focus(); }
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z" && !iFelt && angreFn) { e.preventDefault(); utforAngre(); }
+    if (e.key === "Escape" && valgtId && !iFelt && !document.querySelector("dialog[open]") && $("#hoyremeny").hidden && $("#bekreft").hidden) velg(null);
   });
 
   const vk = $("#varsel-knapp");

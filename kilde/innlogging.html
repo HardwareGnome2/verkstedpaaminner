@@ -29,6 +29,7 @@
 .sky-rolle.admin { background: var(--gul); color: #0f1519; }
 .sky-rolle.venter { background: var(--oransje); color: #fff; }
 .sky-rolle.sperret { background: var(--rod-svak); color: var(--rod-svak-tekst); }
+.sky-rolle.fjernet { background: var(--panel2); color: var(--dempet); text-decoration: line-through; }
 </style>
 <div id="sky-login" role="dialog" aria-modal="true" aria-labelledby="sky-login-tittel">
   <div class="login-kort">
@@ -75,7 +76,10 @@
       <div id="sky-steg-vent" class="vent-boks" hidden>
         <h2 id="sky-vent-tittel">Venter på godkjenning</h2>
         <p id="sky-vent-tekst">Kontoen din er opprettet. En administrator må godkjenne den før du får tilgang. Siden åpner seg av seg selv når du er godkjent.</p>
-        <button type="button" class="knapp" id="sky-vent-ut">Logg ut</button>
+        <div class="rad" style="justify-content:center">
+          <button type="button" class="knapp gul" id="sky-sok" hidden>Søk om tilgang</button>
+          <button type="button" class="knapp" id="sky-vent-ut">Logg ut</button>
+        </div>
       </div>
     </div>
   </div>

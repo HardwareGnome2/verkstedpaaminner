@@ -10,7 +10,7 @@ import {
   sendPasswordResetEmail, signOut, GoogleAuthProvider, signInWithPopup, updateProfile
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
-  getFirestore, collection, doc, getDoc, setDoc, updateDoc, deleteDoc, onSnapshot, writeBatch
+  getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, onSnapshot, writeBatch
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const $s = (q) => document.querySelector(q);
@@ -91,6 +91,7 @@ $s("#sky-google").addEventListener("click", async () => {
   catch (err) { if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request") visFeil(err); }
 });
 $s("#sky-vent-ut").addEventListener("click", () => signOut(auth).then(() => location.reload()));
+$s("#sky-sok").addEventListener("click", sokTilgang);
 
 // ---------------------------------------------------------------- adapter mot Firestore (samme form som appen bruker)
 function dbFeil(e) {
@@ -164,25 +165,38 @@ onAuthStateChanged(auth, async (u) => {
   steg("laster");
   try {
     const ref = doc(fs, "brukere", u.uid);
+    innlogget = u;
     let snap = await getDoc(ref);
     if (!snap.exists()) {
-      const navn = navnVedRegistrering || u.displayName || (u.email || "").split("@")[0];
-      const grunnlag = { navn, epost: u.email || "", opprettet: Date.now() };
       const oppsett = await getDoc(doc(fs, "system", "oppsett"));
       if (!oppsett.exists()) {
         // første bruker blir administrator
         const b = writeBatch(fs);
-        b.set(ref, Object.assign({ rolle: "admin" }, grunnlag));
+        b.set(ref, Object.assign({ rolle: "admin" }, grunnlag(u)));
         b.set(doc(fs, "system", "oppsett"), { admin: u.uid, opprettet: Date.now() });
         await b.commit();
-      } else {
-        await setDoc(ref, Object.assign({ rolle: "venter" }, grunnlag));
+      } else if (navnVedRegistrering) {
+        // har nettopp opprettet konto: søknaden sendes automatisk
+        await setDoc(ref, Object.assign({ rolle: "venter" }, grunnlag(u)));
       }
+      // ellers: innlogget, men uten tilgang – personen kan selv velge å søke (se under)
     }
-    // følg med på egen rolle, så godkjenning og sperring slår inn med en gang
-    onSnapshot(ref, (d) => {
+    // følg med på egen rolle, så godkjenning, fjerning og sperring slår inn med en gang
+    onSnapshot(ref, async (d) => {
       const data = d.data();
-      if (!data) return;
+      if (!data) {
+        if (startet) { location.reload(); return; }
+        meg = null;
+        visSokSkjerm(u, "ny");
+        return;
+      }
+      if (data.rolle === "fjernet") {
+        if (startet) { location.reload(); return; }
+        await ryddPrivatMappe(u.uid);
+        meg = { uid: u.uid, navn: data.navn, epost: data.epost, rolle: data.rolle, foto: u.photoURL || null };
+        visSokSkjerm(u, data.avvist ? "avvist" : "fjernet");
+        return;
+      }
       const forrige = meg && meg.rolle;
       meg = { uid: u.uid, navn: data.navn, epost: data.epost, rolle: data.rolle, foto: u.photoURL || null };
       if (data.rolle === "bruker" || data.rolle === "admin") {
@@ -192,10 +206,11 @@ onAuthStateChanged(auth, async (u) => {
         if (startet) { location.reload(); return; }
         visLogin(true);
         steg("vent");
+        $s("#sky-sok").hidden = true;
         const sperret = data.rolle === "sperret";
-        $s("#sky-vent-tittel").textContent = sperret ? "Tilgangen er fjernet" : `Hei ${(data.navn || "").split(" ")[0]}! Venter på godkjenning`;
+        $s("#sky-vent-tittel").textContent = sperret ? "Tilgangen er stoppet" : `Hei ${(data.navn || "").split(" ")[0]}! Venter på godkjenning`;
         $s("#sky-vent-tekst").textContent = sperret
-          ? "En administrator har fjernet tilgangen din. Ta kontakt med administrator hvis dette er feil."
+          ? "En administrator har stoppet tilgangen din. Ta kontakt med administrator hvis dette er feil."
           : "Kontoen din er opprettet. En administrator må godkjenne den under Innstillinger før du får tilgang. Siden åpner seg av seg selv når du er godkjent.";
       }
     }, (e) => { visLogin(true); steg("login"); visFeil(e); });
@@ -204,8 +219,49 @@ onAuthStateChanged(auth, async (u) => {
   }
 });
 
+// ---------------------------------------------------------------- uten tilgang: søk om (ny) tilgang
+let innlogget = null;
+function grunnlag(u) {
+  return { navn: navnVedRegistrering || u.displayName || (u.email || "").split("@")[0], epost: u.email || "", opprettet: Date.now() };
+}
+function visSokSkjerm(u, grunn) {
+  visLogin(true);
+  steg("vent");
+  $s("#sky-sok").hidden = false;
+  $s("#sky-sok").disabled = false;
+  const tekster = {
+    fjernet: ["Du er fjernet fra Verkstedpåminner", "En administrator har fjernet deg fra appen, og den private mappen din er slettet. Trenger du tilgang igjen, kan du søke på nytt."],
+    avvist: ["Søknaden ble ikke godkjent", "En administrator har avvist søknaden om tilgang. Du kan søke på nytt hvis det var en feil."],
+    ny: ["Du har ikke tilgang ennå", `Du er logget inn som ${u.email || "ukjent"}, men har ikke tilgang til notatene. Søk om tilgang, så kan en administrator godkjenne deg.`],
+  }[grunn] || [];
+  $s("#sky-vent-tittel").textContent = tekster[0];
+  $s("#sky-vent-tekst").textContent = tekster[1];
+}
+// sletter egne private notater etter at man er fjernet (sikkerhetsreglene tillater bare dette for eieren)
+let ryddet = false;
+async function ryddPrivatMappe(uid) {
+  if (ryddet) return;
+  ryddet = true;
+  try {
+    const snap = await getDocs(collection(fs, "data/users/" + uid));
+    await Promise.all(snap.docs.map((d) => deleteDoc(d.ref)));
+  } catch (e) { /* prøver igjen neste gang */ }
+}
+async function sokTilgang() {
+  const u = innlogget;
+  if (!u) return;
+  const knapp = $s("#sky-sok");
+  knapp.disabled = true;
+  try {
+    const ref = doc(fs, "brukere", u.uid);
+    const snap = await getDoc(ref);
+    if (snap.exists()) await updateDoc(ref, { rolle: "venter", sokt: Date.now() });
+    else await setDoc(ref, Object.assign({ rolle: "venter" }, grunnlag(u)));
+  } catch (e) { knapp.disabled = false; alert(norsk(e)); }
+}
+
 // ---------------------------------------------------------------- innstillinger: konto og brukeradministrasjon
-const ROLLER = { admin: "Admin", bruker: "Bruker", venter: "Venter", sperret: "Sperret" };
+const ROLLER = { admin: "Admin", bruker: "Bruker", venter: "Venter", sperret: "Sperret", fjernet: "Fjernet" };
 function antallAdmin() { return Object.values(brukere).filter((b) => b.rolle === "admin").length; }
 function oppdaterAdminMerke() {
   const k = $s("#innst-knapp");
@@ -217,8 +273,8 @@ function oppdaterAdminMerke() {
 function tegnBrukerliste() {
   const ul = $s("#sky-brukere");
   const liste = Object.entries(brukere).sort(([, a], [, b]) => {
-    const r = { venter: 0, admin: 1, bruker: 2, sperret: 3 };
-    return (r[a.rolle] - r[b.rolle]) || (a.navn || "").localeCompare(b.navn || "", "nb");
+    const r = { venter: 0, admin: 1, bruker: 2, sperret: 3, fjernet: 4 };
+    return ((r[a.rolle] ?? 5) - (r[b.rolle] ?? 5)) || (a.navn || "").localeCompare(b.navn || "", "nb");
   });
   ul.innerHTML = "";
   for (const [uid, b] of liste) {
@@ -230,26 +286,51 @@ function tegnBrukerliste() {
     const rolle = document.createElement("span");
     rolle.className = "sky-rolle " + b.rolle; rolle.textContent = ROLLER[b.rolle] || b.rolle;
     li.append(tekst, rolle);
-    const knapp = (t, ny, klasse) => {
+    const knapp = (t, ny, klasse, tittel) => {
       const k = document.createElement("button");
       k.type = "button"; k.className = "knapp liten" + (klasse ? " " + klasse : ""); k.textContent = t;
-      k.addEventListener("click", () => settRolle(uid, b, ny));
+      if (tittel) k.title = tittel;
+      k.addEventListener("click", () => (ny === "fjernet" ? fjernBruker(uid, b) : settRolle(uid, b, ny)));
       li.append(k);
     };
+    const FJERN = "Stopper tilgangen, flytter sakene personen er ansvarlig for til deg og sletter den private mappen. Personen kan søke om tilgang igjen senere.";
+    const SPERR = "Stopper tilgangen permanent. Personen kan ikke søke om tilgang igjen før du opphever det.";
     if (uid !== meg.uid) {
-      if (b.rolle === "venter") { knapp("Godkjenn", "bruker", "gul"); knapp("Avvis", "sperret", "fare-knapp"); }
-      else if (b.rolle === "bruker") { knapp("Gjør til admin", "admin"); knapp("Fjern tilgang", "sperret", "fare-knapp"); }
-      else if (b.rolle === "admin") { knapp("Gjør til bruker", "bruker"); }
-      else if (b.rolle === "sperret") { knapp("Gi tilgang", "bruker"); }
+      if (b.rolle === "venter") { knapp("Godkjenn", "bruker", "gul"); knapp("Avvis", "fjernet", "fare-knapp", "Avviser søknaden. Personen kan søke igjen senere."); }
+      else if (b.rolle === "bruker") { knapp("Gjør til admin", "admin"); knapp("Fjern bruker", "fjernet", "fare-knapp", FJERN); knapp("Sperr", "sperret", "", SPERR); }
+      else if (b.rolle === "admin") { knapp("Gjør til bruker", "bruker"); knapp("Fjern bruker", "fjernet", "fare-knapp", FJERN); }
+      else if (b.rolle === "sperret") { knapp("Gi tilgang", "bruker"); knapp("Opphev sperring", "fjernet", "", "Personen får ikke tilgang, men kan søke på nytt."); }
+      else if (b.rolle === "fjernet") { knapp("Gi tilgang", "bruker"); }
     } else {
       const deg = document.createElement("small"); deg.textContent = "(deg)"; li.append(deg);
     }
     ul.append(li);
   }
 }
+async function fjernBruker(uid, b) {
+  const navn = b.navn || b.epost || "brukeren";
+  if (b.rolle === "admin" && antallAdmin() <= 1) { alert("Det må være minst én administrator."); return; }
+  if (b.rolle === "venter") {
+    if (!confirm(`Avvise søknaden fra ${navn}?\n\n${navn} kan søke på nytt senere.`)) return;
+  } else if (b.rolle === "sperret") {
+    if (!confirm(`Oppheve sperringen for ${navn}?\n\n${navn} får ikke tilgang automatisk, men kan søke på nytt.`)) return;
+  } else {
+    const antall = typeof window.antallAnsvar === "function" ? window.antallAnsvar(uid) : 0;
+    const linjer = [
+      "• Tilgangen stoppes med en gang",
+      antall ? `• ${antall} ${antall === 1 ? "sak" : "saker"} der ${navn} er ansvarlig, flyttes til deg` : "• Ingen saker å flytte",
+      "• Den private mappen slettes neste gang personen åpner appen",
+      `• ${navn} kan søke om ny tilgang senere`,
+    ];
+    if (!confirm(`Fjerne ${navn} fra appen?\n\n${linjer.join("\n")}`)) return;
+    if (antall && typeof window.overforAnsvar === "function") window.overforAnsvar(uid, navn);
+  }
+  try { await updateDoc(doc(fs, "brukere", uid), { rolle: "fjernet", avvist: b.rolle === "venter", endretAv: meg.uid, endret: Date.now() }); }
+  catch (e) { alert(norsk(e)); }
+}
 async function settRolle(uid, b, ny) {
   if (b.rolle === "admin" && ny !== "admin" && antallAdmin() <= 1) { alert("Det må være minst én administrator."); return; }
-  if (ny === "sperret" && !confirm(`Fjerne tilgangen for ${b.navn || b.epost}?`)) return;
+  if (ny === "sperret" && !confirm(`Sperre ${b.navn || b.epost}?\n\nPersonen mister tilgangen og kan ikke søke på nytt før du opphever sperringen.`)) return;
   try { await updateDoc(doc(fs, "brukere", uid), { rolle: ny, endretAv: meg.uid, endret: Date.now() }); }
   catch (e) { alert(norsk(e)); }
 }
